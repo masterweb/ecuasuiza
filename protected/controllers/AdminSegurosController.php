@@ -30,6 +30,7 @@ class AdminSegurosController extends Controller {
             $archivoAdjunto = CUploadedFile::getInstance($model, 'link_attachment');
             $model->fecha = date("Y-m-d G:i:s");
             $model->img_banner = $_POST['Seguros']['img_banner'];
+            $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
 
             if ($model->img_banner == 'Si') {
                 $archivoBanner = CUploadedFile::getInstance($model, 'link_img');
@@ -43,8 +44,6 @@ class AdminSegurosController extends Controller {
                         if ($model->save()) {
                             $archivoBanner->saveAs(Yii::getPathOfAlias("webroot")."/img/seguros/".$fileName);
                             $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot")."/uploads/".$fileName2);
-//                            $archivoBanner->saveAs(Yii::app()->basePath . '/docs/' . $fileName);
-//                            $archivoAdjunto->saveAs(Yii::app()->basePath . '/docs/' . $fileName2);
                             $this->redirect(array('adminseguros/hogar'));
                         } else {
                             echo 'registro no grabado';
