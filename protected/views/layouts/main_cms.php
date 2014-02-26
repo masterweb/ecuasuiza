@@ -28,45 +28,146 @@
         <script  type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/bootstrap-wysihtml5.js"></script>
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validationEngine-es.js" type="text/javascript" charset="utf-8"></script>
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validationEngine.js" type="text/javascript" charset="utf-8"></script>
+        <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validate.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/bootstrap-fileupload.min.js"></script>
-        <style type="text/css">
-            /*            .form-signin {
-                            max-width: 300px;
-                            padding: 19px 29px 29px;
-                            margin: 0 auto 20px;
-                            background-color: #F2F2F2;
-                            border: 1px solid #e5e5e5;
-                            -webkit-border-radius: 5px;
-                            -moz-border-radius: 5px;
-                            border-radius: 5px;
-                            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-                            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-                            box-shadow: 0 1px 2px rgba(0,0,0,.05);               
-                        }
-                        .form-signin .form-signin-heading,
-                        .form-signin .checkbox {
-                            margin-bottom: 10px;
-                        }
-                        .form-signin input[type="text"],
-                        .form-signin input[type="password"] {
-                            font-size: 16px;
-                            height: auto;
-                            margin-bottom: 15px;
-                            padding: 7px 9px;
-                        }
-            
-                        input{
-                            height: 14px !important;
-                            background: red !important;
-                        }
-                        .add-on{
-                            height: 26px !important;
-                            padding: 4px 9px !important;
-                        }*/
-        </style>
         <script>
             $( document ).ready(function() {
-                $("#ingresoOferta").validationEngine();
+                //$("#ingresoOferta").validationEngine();
+                $("#ingresoOferta").validate({
+                    rules:{
+                        'Seguros[img_banner]':{
+                            required:true
+                        },
+                        'Seguros[title]':{
+                            required:true
+                        },
+                        'Seguros[desc_min]':{
+                            required:true
+                        },
+                        'Seguros[contenido]':{
+                            required:true
+                        },
+                        'Seguros[tipo_attachment]':{
+                            required:true
+                        }
+                    },
+                    messages:{
+                        'Seguros[img_banner]':{
+                            required:'Seleccione una opción'
+                        },
+                        'Seguros[title]':{
+                            required:'Ingrese el título'
+                        },
+                        'Seguros[desc_min]':{
+                            required:'Ingrese un descripción breve'
+                        },
+                        'Seguros[contenido]':{
+                            required:'Ingrese contenido'
+                        },
+                        'Seguros[tipo_attachment]':{
+                            required:'Seleccione una opción'
+                        }
+                    },
+                    submitHandler: function(form) {
+                        var imageSelected = $("#imageSelect").val();
+                        var success = 0;
+                        // ver si tiene imagen principal
+                        if(imageSelected == 'Si'){
+                            var validateInput = check();
+                            if(validateInput == true){
+                                alert('Debe seleccionar una imágen')
+                                return false;
+                            }
+                            var filename = $('#Seguros_link_img').val();
+                            var ext = filename.split('.').pop();
+                            
+                            if(ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif' ){
+                                success++
+                            }else{
+                                alert('Debe seleccionar una imágen válida')
+                                return false;
+                            }
+                            
+                            // obtener extension del archivo adjunto
+                            var attachment = $('#Seguros_link_attachment').val();
+                            //var tipodoc = $( "#tipodoc option:selected" ).text();
+                            var tipodoc = $('#tipodoc').val()
+                            var extAttach = attachment.split('.').pop();
+                            
+                            //alert('attachment: '+attachment + ' tipodoc:  '+tipodoc + ' extAtachment: '+extAttach)
+                            
+                            switch(tipodoc)
+                            {
+                                case 'pdf':
+                                    console.log('entra a pdf')
+                                    if(extAttach != 'pdf'){
+                                        alert('Seleccione un archivo válido pdf')
+                                        return false;
+                                    }else{
+                                        form.submit();
+                                    }
+                                    break;
+                                case 'word':
+                                    if(extAttach != 'docx'){
+                                        alert('Seleccione un archivo válido word')
+                                        return false;
+                                    }else{
+                                        form.submit();
+                                    }
+                                    break;
+                                case 'excel':
+                                    if(extAttach != 'xlsx'){
+                                        alert('Seleccione un archivo válido excel')
+                                        return false;
+                                    }else{
+                                        form.submit();
+                                    }
+                                    break;
+                                default:
+                        
+                            }
+                        }else{
+                           // obtener extension del archivo adjunto
+                            var attachment = $('#Seguros_link_attachment').val();
+                            //var tipodoc = $( "#tipodoc option:selected" ).text();
+                            var tipodoc = $('#tipodoc').val()
+                            var extAttach = attachment.split('.').pop();
+                            
+                            //alert('attachment: '+attachment + ' tipodoc:  '+tipodoc + ' extAtachment: '+extAttach)
+                            
+                            switch(tipodoc)
+                            {
+                                case 'pdf':
+                                    console.log('entra a pdf')
+                                    if(extAttach != 'pdf'){
+                                        alert('Seleccione un archivo válido pdf')
+                                        return false;
+                                    }else{
+                                        form.submit();
+                                    }
+                                    break;
+                                case 'word':
+                                    if(extAttach != 'docx'){
+                                        alert('Seleccione un archivo válido word')
+                                        return false;
+                                    }else{
+                                        form.submit();
+                                    }
+                                    break;
+                                case 'excel':
+                                    if(extAttach != 'xlsx'){
+                                        alert('Seleccione un archivo válido excel')
+                                        return false;
+                                    }else{
+                                        form.submit();
+                                    }
+                                    break;
+                                default:
+                        
+                            } 
+                        }
+                    }
+                });
                 $("#upload-file").hide();
                 $('#imageSelect').change(function() {
                     var value = $(this).attr('value');
@@ -79,15 +180,14 @@
                 
             });
             
-            function checkHELLO(field, rules, i, options){
-                var tipodoc = field.val();
-                var ext = filename.split('.').pop();
-                
-                if (ext != "pdf") {
-                    // this allows the use of i18 for the error msgs
-                    return options.allrules.validate2fields.alertText;
+            function check()
+            {
+                var d = document.getElementById('Seguros_link_img');
+                if(d.value == ''){
+                    return true;
                 }
             }
+        
             function checkInputFile(){
                 
                 var tipodoc = $( "#tipodoc option:selected" ).text();
