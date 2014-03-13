@@ -1,22 +1,11 @@
-<?php
-if (!Yii::app()->user->isAdminUser()) {
-    $this->redirect($this->createUrl('admin/login'));
-}
-?>
-<?php
-$this->breadcrumbs = array(
-    'Administración Seguros Hogar',
-);
-
-//print_r($model);
-?>
+<h3>Actualizar Seguro : <?php echo $model->title; ?></h3>
 <div class="container">
     <hr>
 <!--    <form class="form-horizontal" action="<?php echo Yii::app()->createUrl('adminseguros/create'); ?>" method="post" id="ingresoOferta" name="ingresoOferta">-->
     <?php
     $form = $this->beginWidget('CActiveForm', array(
         'id' => 'ingresoOferta',
-        'action' => Yii::app()->createUrl('adminseguros/create'),
+        'action' => Yii::app()->createUrl('adminseguros/update'),
         'enableAjaxValidation' => false,
         'enableClientValidation' => false,
         'htmlOptions' => array('enctype' => 'multipart/form-data', 'class' => 'form-horizontal'),
@@ -27,8 +16,8 @@ $this->breadcrumbs = array(
     <div class="control-group">
         <label class="control-label" for="inputPassword">Categoría</label>
         <div class="controls">
-            <?php echo $form->dropDownList($model,'categoria', array(""=>"Seleccione una categoría","hogar"=>"Seguros Hogar","empresarial"=>"Seguros Empresariales","vida"=>"Seguros de Vida","auto"=>"Seguros Autos"), array()); ?>
-       </div>
+            <?php echo $form->dropDownList($model, 'categoria', array("" => "Seleccione una categoría", "hogar" => "Seguros Hogar", "empresarial" => "Seguros Empresariales", "vida" => "Seguros de Vida", "auto" => "Seguros Autos"), array()); ?>
+        </div>
     </div>
     <div class="control-group">
         <label class="control-label" for="inputPassword">Subir foto</label>
@@ -108,7 +97,7 @@ $this->breadcrumbs = array(
     <div class="control-group">
         <div class="controls">
 <!--                <input type="submit" class="btn" value="Enviar" id="sendOferta" name="sendOferta">-->
-            <?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar'); ?>
+            <?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar'); ?>
         </div>
     </div>
     <!--    </form>-->

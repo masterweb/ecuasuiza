@@ -7,16 +7,18 @@ if (!Yii::app()->user->isAdminUser()) {
 $this->breadcrumbs = array(
     'Administración Seguros Hogar',
 );
-
-//print_r($model);
+$id = 0;
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+}
 ?>
 <div class="container">
     <hr>
 <!--    <form class="form-horizontal" action="<?php echo Yii::app()->createUrl('adminseguros/create'); ?>" method="post" id="ingresoOferta" name="ingresoOferta">-->
     <?php
     $form = $this->beginWidget('CActiveForm', array(
-        'id' => 'ingresoOferta',
-        'action' => Yii::app()->createUrl('adminseguros/create'),
+        'id' => 'updateSeguros',
+        'action' => Yii::app()->createUrl('adminseguros/update', array('id' => $id )),
         'enableAjaxValidation' => false,
         'enableClientValidation' => false,
         'htmlOptions' => array('enctype' => 'multipart/form-data', 'class' => 'form-horizontal'),
@@ -27,20 +29,47 @@ $this->breadcrumbs = array(
     <div class="control-group">
         <label class="control-label" for="inputPassword">Categoría</label>
         <div class="controls">
-            <?php echo $form->dropDownList($model,'categoria', array(""=>"Seleccione una categoría","hogar"=>"Seguros Hogar","empresarial"=>"Seguros Empresariales","vida"=>"Seguros de Vida","auto"=>"Seguros Autos"), array()); ?>
-       </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="inputPassword">Subir foto</label>
-        <div class="controls">
-            <select name="Seguros[img_banner]" id="imageSelect" class="validate[required]">
-                <option value="">--Seleccione una opción--</option>
-                <option value="Si">Si</option>
-                <option value="No">No</option>
-            </select>
-
+            <?php echo $form->dropDownList($model, 'categoria', array("" => "Seleccione una categoría", "hogar" => "Seguros Hogar", "empresarial" => "Seguros Empresariales", "vida" => "Seguros de Vida", "auto" => "Seguros Autos"), array()); ?>
         </div>
     </div>
+    <?php
+    if ($model->link_img != ''):
+        ?>
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Imágen actual</label>
+            <div class="controls">
+                <img src="<?php echo Yii::app()->request->baseUrl; ?>/img/seguros/<?php echo $model->link_img ?>" class="img-polaroid"/>
+                <br><br>
+                <button class="btn btn-primary" type="button" id="change-image">Cambiar imágen</button>
+            </div>
+        </div>
+
+    <?php else: ?>
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Subir foto</label>
+            <div class="controls">
+                <select name="Seguros[link_img]" id="imageSelect" class="validate[required]">
+                    <option value="">--Seleccione una opción--</option>
+                    <option value="Si">Si</option>
+                    <option value="No">No</option>
+                </select>
+
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!--    
+        <div class="control-group">
+            <label class="control-label" for="inputPassword">Subir foto</label>
+            <div class="controls">
+                <select name="Seguros[img_banner]" id="imageSelect" class="validate[required]">
+                    <option value="">--Seleccione una opción--</option>
+                    <option value="Si">Si</option>
+                    <option value="No">No</option>
+                </select>
+    
+            </div>
+        </div>-->
     <div class="control-group" id="upload-file">
         <label class="control-label" for="inputPassword">Seleccione imágen</label>
         <div class="controls">
@@ -86,6 +115,17 @@ $this->breadcrumbs = array(
         </div>
     </div>
     <div class="control-group">
+        <label class="control-label" for="inputPassword">Documento Actual</label>
+        <div class="controls">
+            <?php echo $model->link_attachment; ?>
+            <br><br>
+            <button class="btn btn-primary" type="button" id="change-attachment">Cambiar adjunto</button>
+            <input type="hidden" name="Seguros[link_attachment_ready]" id="link_attachment_ready" value="<?php echo $model->link_attachment; ?>"/>
+            <input type="hidden" name="Seguros[link_img_ready]" id="link_img_ready" value="<?php echo $model->link_img; ?>"/>
+            <input type="hidden" name="Seguros[tipo_attachment_ready]" id="tipo_attachment_ready" value="<?php echo $model->tipo_attachment; ?>"/>
+        </div>
+    </div>
+    <div class="control-group" style="display: none;" id="upload-attachment">
         <label class="control-label" for="inputPassword">Tipo de documento anexo</label>
         <div class="controls">
             <select name="Seguros[tipo_attachment]" id="tipodoc" class="validate[required]">
@@ -97,10 +137,10 @@ $this->breadcrumbs = array(
             </select>
         </div>
     </div>
-    <div class="control-group">
+
+    <div class="control-group" style="display: none;" id="upload-attachment-link">
         <label class="control-label" for="inputPassword">Documento</label>
         <div class="controls">
-<!--                <input type="file" name="Seguros[file2]" id="file2" class="validate[required,funcCall[checkInputFile]]"/>-->
             <?php echo $form->FileField($model, 'link_attachment'); ?>
         </div>
     </div>

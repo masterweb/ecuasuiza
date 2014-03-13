@@ -1,0 +1,9 @@
+<?php
+if(!Yii::app()->user->isAdminUser()){
+    $this->redirect($this->createUrl('admin/login'));
+}
+?>
+<?php
+$this->breadcrumbs=array(
+	'Cms',
+);?>

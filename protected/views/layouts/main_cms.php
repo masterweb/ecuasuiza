@@ -30,202 +30,14 @@
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validationEngine.js" type="text/javascript" charset="utf-8"></script>
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validate.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/bootstrap-fileupload.min.js"></script>
-        <script>
-            $( document ).ready(function() {
-                //$("#ingresoOferta").validationEngine();
-                $("#ingresoOferta").validate({
-                    rules:{
-                        'Seguros[img_banner]':{
-                            required:true
-                        },
-                        'Seguros[title]':{
-                            required:true
-                        },
-                        'Seguros[desc_min]':{
-                            required:true
-                        },
-                        'Seguros[contenido]':{
-                            required:true
-                        },
-                        'Seguros[tipo_attachment]':{
-                            required:true
-                        }
-                    },
-                    messages:{
-                        'Seguros[img_banner]':{
-                            required:'Seleccione una opción'
-                        },
-                        'Seguros[title]':{
-                            required:'Ingrese el título'
-                        },
-                        'Seguros[desc_min]':{
-                            required:'Ingrese un descripción breve'
-                        },
-                        'Seguros[contenido]':{
-                            required:'Ingrese contenido'
-                        },
-                        'Seguros[tipo_attachment]':{
-                            required:'Seleccione una opción'
-                        }
-                    },
-                    submitHandler: function(form) {
-                        var imageSelected = $("#imageSelect").val();
-                        var success = 0;
-                        // ver si tiene imagen principal
-                        if(imageSelected == 'Si'){
-                            var validateInput = check();
-                            if(validateInput == true){
-                                alert('Debe seleccionar una imágen')
-                                return false;
-                            }
-                            var filename = $('#Seguros_link_img').val();
-                            var ext = filename.split('.').pop();
-                            
-                            if(ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'gif' ){
-                                success++
-                            }else{
-                                alert('Debe seleccionar una imágen válida')
-                                return false;
-                            }
-                            
-                            // obtener extension del archivo adjunto
-                            var attachment = $('#Seguros_link_attachment').val();
-                            //var tipodoc = $( "#tipodoc option:selected" ).text();
-                            var tipodoc = $('#tipodoc').val()
-                            var extAttach = attachment.split('.').pop();
-                            
-                            //alert('attachment: '+attachment + ' tipodoc:  '+tipodoc + ' extAtachment: '+extAttach)
-                            
-                            switch(tipodoc)
-                            {
-                                case 'pdf':
-                                    console.log('entra a pdf')
-                                    if(extAttach != 'pdf'){
-                                        alert('Seleccione un archivo válido pdf')
-                                        return false;
-                                    }else{
-                                        form.submit();
-                                    }
-                                    break;
-                                case 'word':
-                                    if(extAttach != 'docx'){
-                                        alert('Seleccione un archivo válido word')
-                                        return false;
-                                    }else{
-                                        form.submit();
-                                    }
-                                    break;
-                                case 'excel':
-                                    if(extAttach != 'xlsx'){
-                                        alert('Seleccione un archivo válido excel')
-                                        return false;
-                                    }else{
-                                        form.submit();
-                                    }
-                                    break;
-                                default:
-                        
-                            }
-                        }else{
-                           // obtener extension del archivo adjunto
-                            var attachment = $('#Seguros_link_attachment').val();
-                            //var tipodoc = $( "#tipodoc option:selected" ).text();
-                            var tipodoc = $('#tipodoc').val()
-                            var extAttach = attachment.split('.').pop();
-                            
-                            //alert('attachment: '+attachment + ' tipodoc:  '+tipodoc + ' extAtachment: '+extAttach)
-                            
-                            switch(tipodoc)
-                            {
-                                case 'pdf':
-                                    console.log('entra a pdf')
-                                    if(extAttach != 'pdf'){
-                                        alert('Seleccione un archivo válido pdf')
-                                        return false;
-                                    }else{
-                                        form.submit();
-                                    }
-                                    break;
-                                case 'word':
-                                    if(extAttach != 'docx'){
-                                        alert('Seleccione un archivo válido word')
-                                        return false;
-                                    }else{
-                                        form.submit();
-                                    }
-                                    break;
-                                case 'excel':
-                                    if(extAttach != 'xlsx'){
-                                        alert('Seleccione un archivo válido excel')
-                                        return false;
-                                    }else{
-                                        form.submit();
-                                    }
-                                    break;
-                                default:
-                        
-                            } 
-                        }
-                    }
-                });
-                $("#upload-file").hide();
-                $('#imageSelect').change(function() {
-                    var value = $(this).attr('value');
-                    if(value == 'Si'){
-                        $("#upload-file").show(); 
-                    }else if(value == 'No'){
-                        $("#upload-file").hide();
-                    }
-                });
-                
-            });
-            
-            function check()
-            {
-                var d = document.getElementById('Seguros_link_img');
-                if(d.value == ''){
-                    return true;
-                }
-            }
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/functions.js"></script>
         
-            function checkInputFile(){
-                
-                var tipodoc = $( "#tipodoc option:selected" ).text();
-                
-                var validateInput;
-                var filename = $('#fileGeneral').val();
-                var ext = filename.split('.').pop();
-                //alert('extension: '+ext)
-               
-                switch(tipodoc)
-                {
-                    case 'pdf':
-                        if(ext != 'pdf'){
-                            return false;
-                        }
-                        break;
-                    case 'word':
-                        if(ext != 'docx'){
-                            return options.allrules.validate2fields.alertText;
-                        }
-                        break;
-                    case 'excel':
-                        if(ext != 'xlsx'){
-                            return options.allrules.validate2fields.alertText;
-                        }
-                        break;
-                    default:
-                        
-                }
-            }
-            
-        </script>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
     </head>
 
     <body>
         <div class="container" id="page">
-            <div class="navbar">
+            <div class="navbar navbar-fixed-top">
                 <div class="navbar-inner">
                     <?php
                     $this->widget('zii.widgets.CMenu', array(
@@ -233,15 +45,30 @@
                         'htmlOptions' => array('class' => 'nav'),
                         'items' => array(
                             array('label' => 'Login', 'url' => array('admin/login'), 'visible' => Yii::app()->user->isAdminUser()),
-                            array('label' => 'Artículos', 'url' => array('/site/index'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
-                            array('label' => 'Multimedia', 'url' => array('/ramos/index'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
-                            array('label' => 'Seguros', 'url' => array('/servicios'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
+                            //array('label' => 'Users', 'url' => array('/admin/users'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                            array('label' => 'Home', 'url' => array('/site/index'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
                                 'items' => array(
-                                    array('label' => 'Seguros Hogar', 'url' => array('adminseguros/hogar'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
-                                    array('label' => 'Seguros Empresariales', 'url' => array('adminseguros/empresarial'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
-                                    array('label' => 'Seguros Autos', 'url' => array('adminseguros/autos'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser())
+                                    array('label' => 'Slider', 'url' => array('slider/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                    array('label' => 'Banners Seguros', 'url' => array('admin/banners'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                    array('label' => 'Noticias', 'url' => array('noticias/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser())
+                                )),
+                            array('label' => 'Multimedia', 'url' => array('/admin/multimedia'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
+                                'items' => array(
+                                    //array('label' => 'Administrar Pdfs', 'url' => array('pdf/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                    array('label' => 'Subir Imágen', 'url' => array('image/create'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                    array('label' => 'Administrar PDF', 'url' => array('pdf/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                    array('label' => 'Administrar Word', 'url' => array('word/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                )
+                                ),
+                            array('label' => 'Seguros', 'url' => array(''), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
+                                'items' => array(
+                                    array('label' => 'Administrar', 'url' => array('cms/list'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
                                 )
                             ),
+                            array('label' => 'Servicios', 'url' => array(''), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
+                                'items' => array(
+                                    array('label' => 'Administrar', 'url' => array('servicios/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                )),
                             array('label' => 'Información', 'url' => array('/site/informacion'), 'visible' => !Yii::app()->user->isGuest),
                             array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser())
                         ),

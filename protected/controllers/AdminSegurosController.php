@@ -92,7 +92,7 @@ class AdminSegurosController extends Controller {
 
             if (($archivoAdjunto != '') && ($archivoBanner != '')){
                 //die('archivoadjunto archivobanner not empty');
-                $model->img_banner = $_POST['Seguros']['img_banner'];
+                $model->img_banner = $_POST['Seguros']['link_img'];
                 $fileName = "{$archivoBanner}";  // file name
                 $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
                 $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
@@ -109,10 +109,11 @@ class AdminSegurosController extends Controller {
                 $this->redirect(array('cms/list'));
             }
             if (($archivoAdjunto == '') && ($archivoBanner != '')):
-                $model->img_banner = $_POST['Seguros']['img_banner'];
+                //$model->img_banner = $_POST['Seguros']['link_img'];
                 $fileName = "{$archivoBanner}";  // file name
                 $model->link_img = $fileName;
                 $model->link_attachment = $_POST['Seguros']['link_attachment_ready'];
+                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment_ready'];
 
                 if (!$archivoBanner->getHasError()):
                     $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
@@ -141,6 +142,7 @@ class AdminSegurosController extends Controller {
                 // solo actualiza campos de texto y desplegables
                 $model->link_img = $_POST['Seguros']['link_img_ready'];
                 $model->link_attachment = $_POST['Seguros']['link_attachment_ready'];
+                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment_ready'];
                 //die('linkimg: '.$model->link_img.'<br>link attachment: '.$model->link_attachment);
                 $model->save();
                 $this->redirect(array('cms/list'));

@@ -1,31 +1,28 @@
 <?php
 
 /**
- * This is the model class for table "tbl_seguros".
+ * This is the model class for table "tbl_trabaja_nosotros".
  *
- * The followings are the available columns in table 'tbl_seguros':
- * @property integer $id
- * @property string $link_img
- * @property string $title
- * @property string $desc_min
- * @property string $contenido
- * @property string $link_attachment
- * @property string $tipo_attachment
- * @property string $img_banner
+ * The followings are the available columns in table 'tbl_trabaja_nosotros':
+ * @property string $id
+ * @property string $nombres
+ * @property string $apellidos
+ * @property string $telefono
+ * @property string $celular
+ * @property string $ciudad
+ * @property string $email
+ * @property string $disponibilidad
+ * @property string $area_interes
+ * @property string $link
  * @property string $fecha
  */
-class Seguros extends CActiveRecord {
+class TrabajaNosotros extends CActiveRecord {
 
     /**
      * @return string the associated database table name
      */
-    public $title;
-    public $desc_min;
-    public $contenido;
-    
-    
     public function tableName() {
-        return 'tbl_seguros';
+        return 'tbl_trabaja_nosotros';
     }
 
     /**
@@ -35,14 +32,13 @@ class Seguros extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array("title, desc_min, contenido","required"),
-            array('link_img, title, link_attachment, fecha', 'length', 'max' => 150),
-            array('tipo_attachment', 'length', 'max' => 30),
-            array('img_banner', 'length', 'max' => 10),
-            array('desc_min, contenido', 'safe'),
+            array('nombres, apellidos, telefono, celular, ciudad, email, disponibilidad, area_interes', 'required'),
+            array('nombres, apellidos, telefono, celular, ciudad, email, fecha', 'length', 'max' => 100),
+            array('disponibilidad, area_interes', 'length', 'max' => 50),
+            array('link','file', 'types'=>'doc, docx, pdf, xls, xlsx'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, link_img, title, desc_min, contenido, link_attachment, tipo_attachment, img_banner, fecha', 'safe', 'on' => 'search'),
+            array('id, nombres, apellidos, telefono, celular, ciudad, email, disponibilidad, area_interes, link, fecha', 'safe', 'on' => 'search'),
         );
     }
 
@@ -62,14 +58,15 @@ class Seguros extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'link_img' => 'Link Img',
-            'title' => 'Título',
-            'desc_min' => 'Descripción breve',
-            'contenido' => 'Contenido',
-            'link_attachment' => 'Link Attachment',
-            'tipo_attachment' => 'Tipo Attachment',
-            'img_banner' => 'Img Banner',
-            'categoria' => 'Categoría',
+            'nombres' => 'Nombres',
+            'apellidos' => 'Apellidos',
+            'telefono' => 'Teléfono de contacto',
+            'celular' => 'Celular',
+            'ciudad' => 'Ciudad',
+            'email' => 'Email',
+            'disponibilidad' => 'Disponibilidad de tiempo',
+            'area_interes' => 'Area de interés',
+            'link' => 'Sube tu currículum',
             'fecha' => 'Fecha',
         );
     }
@@ -91,14 +88,16 @@ class Seguros extends CActiveRecord {
 
         $criteria = new CDbCriteria;
 
-        $criteria->compare('id', $this->id);
-        $criteria->compare('link_img', $this->link_img, true);
-        $criteria->compare('title', $this->title, true);
-        $criteria->compare('desc_min', $this->desc_min, true);
-        $criteria->compare('contenido', $this->contenido, true);
-        $criteria->compare('link_attachment', $this->link_attachment, true);
-        $criteria->compare('tipo_attachment', $this->tipo_attachment, true);
-        $criteria->compare('img_banner', $this->img_banner, true);
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('nombres', $this->nombres, true);
+        $criteria->compare('apellidos', $this->apellidos, true);
+        $criteria->compare('telefono', $this->telefono, true);
+        $criteria->compare('celular', $this->celular, true);
+        $criteria->compare('ciudad', $this->ciudad, true);
+        $criteria->compare('email', $this->email, true);
+        $criteria->compare('disponibilidad', $this->disponibilidad, true);
+        $criteria->compare('area_interes', $this->area_interes, true);
+        $criteria->compare('link', $this->link, true);
         $criteria->compare('fecha', $this->fecha, true);
 
         return new CActiveDataProvider($this, array(
@@ -110,7 +109,7 @@ class Seguros extends CActiveRecord {
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return Seguros the static model class
+     * @return TrabajaNosotros the static model class
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
