@@ -1,0 +1,245 @@
+.branch { background: url(../images/icons.png) no-repeat right 18px; }
+
+@media screen and (max-width: 979px) {
+
+    .i_menu { 
+        display: block;
+        float: right;
+        padding: 4px;
+    }
+
+    ul.menudrop {
+        list-style: none;
+        margin: 0;
+        background-color: #4A9D43/*#67a4e7; */
+    }
+    ul.menudrop * {
+        margin: 0;
+        padding: 0
+    }
+    ul.menudrop a {
+        color: #fff !important;
+        display: block;
+        padding: 10px 7px 10px 7px;
+        border-bottom-width: 0;
+        text-decoration: none;
+        text-shadow: none !important;
+    }
+    ul.menudrop a:hover {
+        color: #fff !important;
+        text-decoration: underline;
+    }
+    ul.menudrop li {
+        position: relative;
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid #FFFDFD;
+    }
+    ul.menudrop ul {
+        position: relative;
+        background: #fff;
+        display: none;
+        opacity: 0;
+        list-style: none;
+    }
+    ul.menudrop ul li {
+        position: relative;
+        border-bottom: 1px solid #eee;
+        margin: 0;
+        width: 100%;
+        border-top: 1px solid #eee
+    }
+    ul.menudrop ul li a {
+        display: block;
+        padding: 10px 10px !important;
+        background: none!important;
+        background-color: #f8f8f8;
+        color: #666 !important;
+    }
+/*    ul.menudrop ul li a:hover {
+        background-color: #f8f8f8!important;
+        color: #333;
+    }*/
+    ul.menudrop ul ul {
+        position: relative
+    }
+    ul.menudrop ul li ul li {
+        position: relative;
+        border-bottom: 1px solid #eee;
+        margin: 0;
+        width: 50%;
+        float: left;
+        border-top: 1px solid #eee
+    }
+    ul.menudrop .menulink {
+        padding: 15px 10px;
+    }
+    ul.menudrop .menulink:hover, ul.menudrop .menuhover {
+    }
+    ul.menudrop .sub {
+    }
+    ul.menudrop .topline {
+        border-top: 1px solid #aaa
+    }
+    ul.menudrop .menuactivo {
+        background-color: #3499EF;
+    }
+    .menuholder {
+        font-family:  'colaborate-thinregular';
+        font-size: 13px;
+        line-height: 1em;
+        z-index: 9100;
+        top: 140px;
+        width: 100%;
+        overflow:hidden;
+
+    }
+    .sub-empresariales{
+/*        max-height: 400px;*/
+    }
+    .sub-empresariales .column-emp{
+/*        float: left;*/
+    } 
+    .sub-empresariales .column-emp a{
+        width: auto;
+        padding: 5px 30px 5px 30px !important;
+        text-transform: none;
+        font-weight: normal;
+        color: #777777 !important;
+    }
+}
+@media screen and (min-width: 830px) {
+
+/*    .menuholder {
+        display: block !important;
+    }
+
+    .i_menu { 
+        display: none !important;
+    }
+
+    ul.menudrop {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 0 10px;
+        list-style-type: none;
+    }
+    ul.menudrop * {
+        margin: 0;
+        padding: 0
+    }
+    ul.menudrop a {
+        color: #000;
+        display: block;
+        padding: 10px 30px 10px 30px;
+        border-bottom-width: 0;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 15px;
+        padding-right: 20px!important;
+        font-weight:bold;
+        line-height:1em;
+    }
+    ul.menudrop a span {
+        color: #2da6e5;
+    }
+    ul.menudrop li {
+        position: relative;
+        float: left; margin-top:4px; 
+        float: left;
+        display: inlin; margin-left:18px;
+    }
+    ul.menudrop ul {
+        position: absolute;
+        top: 34px;
+        left: 0;
+        background: #f6f6f6;
+        display: none;
+        opacity: 0;
+        list-style: none;
+        -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        
+    }
+    ul.menudrop ul li {
+        position: relative;
+        margin: 0;
+        width: 184px;
+    }
+    ul.menudrop ul li a {
+        display: block;
+        padding: 5px 10px 5px 24px !important;
+        background: none!important;
+        background-color: #fff;
+        text-transform: none;
+        color: #777777 !important;
+        font-weight: normal;
+        font-size: 13px;
+    }
+    ul.menudrop ul li a:hover {
+        background-color: #f8f8f8;
+    }
+    ul.menudrop ul ul {
+        left: 180px !important;
+        top: -1px;
+        left: -1px;
+        margin-left: 0;
+        background-color: #f8f8f8;
+        width: 150px;
+    }
+    ul.menudrop li ul a:hover{
+        background-color: #797979 !important;
+        color:#ffffff !important;
+    }
+    .seguros-ind a{
+        width: 174px;
+    }
+    .sub-empresariales{
+        max-height: 400px;
+    }
+    .sub-empresariales .column-emp{
+        float: left;
+    } 
+    .sub-empresariales .column-emp a{
+        width: auto;
+        padding: 5px 30px 5px 30px !important;
+        text-transform: none;
+        font-weight: normal;
+        font-size: 13px;
+        color: #777777 !important;
+    }
+    ul.menudrop .menulink {
+        padding: 15px 0px 30px;
+    }
+    ul.menudrop .menulink:hover, ul.menudrop .menuhover {
+                border-top: 2px solid #2da6e5;
+    }
+    ul.menudrop .sub {
+    }
+    ul.menudrop .menuactivo {
+        color: #0063b7;
+        border-top: 2px solid #2da6e5;
+    }
+    .menuholder {
+        font-family: 'colaborate-thinregular';
+        font-size: 13px;
+        line-height: 1em;
+        position:absolute; z-index: 1000;
+        float: right;
+    }*/
+}
+ul.menudrop ul ul a{
+    /*    background-color: #c8ecff!important;*/
+}
+ul.menudrop ul li ul li{
+    position: relative;
+    margin: 0;
+    width: 100%;
+}
+ul.menudrop ul ul li a {
+    /*    border-top: 1px solid #dbf3ff; color:#2DA6E5;*/
+}
+ul.menudrop ul ul li a:hover {
+    /*    background-color:#dbf3ff!important;*/
+}
