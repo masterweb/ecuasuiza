@@ -1,16 +1,20 @@
 <?php
-$this->pageTitle = Yii::app()->name;
+
 $id = 0;
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 }
 $seguros = Seguros::model()->findByAttributes(array('id' => $id));
+$this->pageTitle = Yii::app()->name.'- Seguros Individuales - '.$seguros['title'];
 ?>
 <?php
-$this->breadcrumbs = array(
-    'Seguros Individuales',
-    $seguros['title']
-);
+$this->widget('zii.widgets.CBreadcrumbs', array(
+    'links' => array(
+        'Seguros Individuales',
+        $seguros['title']
+    ),
+    'homeLink' => CHtml::link('Inicio', Yii::app()->homeUrl),
+));
 ?>
 <?php if ($id == 0): ?> 
     <div class="row empresarial">
@@ -79,35 +83,24 @@ $this->breadcrumbs = array(
             <div class="clear"></div>
             <p><?php echo $seguros['desc_min']; ?></p>
             <div>
-                <!--                <h3>PRINCIPALES COBERTURAS:</h3>
-                                <ul>
-                                    <li>Incendio</li>
-                                    <li>Terremoto, temblor y erupción volcánica</li>
-                                    <li>Explosión</li>
-                                    <li>Tsunami</li>
-                                    <li>Daños por agua</li>
-                                    <li>LLuvia e inundación</li>
-                                    <li>Motín y huelga</li>
-                                    <li>Terrorismo</li>
-                                    <li>Colapso</li>
-                                    <li>Daños Maliciosos</li>
-                                </ul>-->
+
                 <?php echo $seguros['contenido']; ?>
-                <h3 class="desc-title">DESCARGAS:</h3>
-                <div class="descargas">
-                    <ul>
-                        <li><a href="/ecuasuiza/uploads/<?php echo $seguros['link_attachment']; ?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/img/hogar/icon_pdf.png"/><p>Condiciones Generales de la póliza <?php echo $seguros['title']; ?></p></a></li>
+                <?php if ($seguros['link_attachment'] != ''): ?>
+                    <h3 class="desc-title">DESCARGAS:</h3>
+                    <div class="descargas">
+                        <ul>
+                            <li><a href="/ecuasuiza/uploads/<?php echo $seguros['link_attachment']; ?>" target="_blank"><img src="<?php echo Yii::app()->request->baseUrl; ?>/img/hogar/icon_pdf.png"/><p><?php echo $seguros['link_attachment']; ?></p></a></li>
 
-                    </ul>
+                        </ul>
 
-                </div>
-
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
         <div class="span2">
             <div class="btn-cotizar">
                 <a href="<?php echo Yii::app()->createUrl('site/contactenos') ?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/img/hogar/contactenos.jpg"/></a>
-                <a href=""><img src="<?php echo Yii::app()->request->baseUrl; ?>/img/hogar/cotizar.jpg"/></a>
+                <a href="<?php echo Yii::app()->createUrl('cotizador/cotizador') ?>"><img src="<?php echo Yii::app()->request->baseUrl; ?>/img/hogar/cotizar.jpg"/></a>
             </div>
         </div>
     </div>
@@ -123,27 +116,27 @@ $this->breadcrumbs = array(
     <?php
     switch ($seguros['categoria']) {
         case 'hogar':
-            $data = '<div class="span3"><a href="'. Yii::app()->createUrl('seguros/empresariales').'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_empresarial.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 53)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_auto.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 54)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_vida.png"/></a></div>';
+            $data = '<div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 53)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_auto.png"/></a></div>
+            <div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 54)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_vida.png"/></a></div>
+                <div class="span3"><a href="' . Yii::app()->createUrl('seguros/empresariales') . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_empresarial.png"/></a></div>';
             echo $data;
             break;
         case 'auto':
-            $data = '<div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 49)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_hogar.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/empresariales').'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_empresarial.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 54)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_vida.png"/></a></div>';
+            $data = '<div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 49)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_hogar.png"/></a></div>
+                <div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 54)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_vida.png"/></a></div>
+            <div class="span3"><a href="' . Yii::app()->createUrl('seguros/empresariales') . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_empresarial.png"/></a></div>';
             echo $data;
             break;
         case 'vida':
-            $data = '<div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 49)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_hogar.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 53)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_auto.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/empresariales').'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_empresarial.png"/></a></div>';
+            $data = '<div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 53)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_auto.png"/></a></div>
+                <div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 49)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_hogar.png"/></a></div>
+            <div class="span3"><a href="' . Yii::app()->createUrl('seguros/empresariales') . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_empresarial.png"/></a></div>';
             echo $data;
             break;
         case 'empresarial':
-            $data = '<div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 49)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_hogar.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 53)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_auto.png"/></a></div>
-            <div class="span3"><a href="'. Yii::app()->createUrl('seguros/individuales', array('id' => 54)).'"><img src="'. Yii::app()->request->baseUrl.'/img/hogar/seg_vida.png"/></a></div>';
+            $data = '<div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 53)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_auto.png"/></a></div>
+                <div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 49)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_hogar.png"/></a></div>
+            <div class="span3"><a href="' . Yii::app()->createUrl('seguros/individuales', array('id' => 54)) . '"><img src="' . Yii::app()->request->baseUrl . '/img/hogar/seg_vida.png"/></a></div>';
             echo $data;
             break;
 

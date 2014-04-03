@@ -23,7 +23,7 @@ class TrabajaNosotrosController extends Controller {
                 if ($archivoAdjunto != '') {
                     $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/hvs/" . $fileName);
                     $model->save();
-                    Yii::app()->user->setFlash('create', 'Gracias por enviar tu hoja de vida.');
+                    Yii::app()->user->setFlash('create', 'Gracias, tu hoja de vida ha sido enviada exitosamente.');
                     $this->refresh();
                 }
             }

@@ -94,7 +94,8 @@ class ImageController extends Controller {
                     $res->name_real = $name_real;
                     $res->save();
                     if ($model->save()){
-                        Yii::app()->user->setFlash('create', 'Imágen subida exitosamente.');
+                        $this->redirect(array('image/admin'));
+                        Yii::app()->user->setFlash('admin', 'Imágen subida exitosamente.');
                         $this->refresh();
                     }
                 }
@@ -191,7 +192,7 @@ class ImageController extends Controller {
      * @param integer the ID of the model to be loaded
      */
     public function loadModel($id) {
-        $model = Word::model()->findByPk($id);
+        $model = Image::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;

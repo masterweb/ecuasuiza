@@ -70,6 +70,7 @@ class PdfController extends Controller {
         if (isset($_POST['Pdf'])) {
             $model->attributes = $_POST['Pdf'];
             if ($model->validate()) {
+                $model->keyword = $_POST['Pdf']['keyword'];
                 $fpdf = CUploadedFile::getInstance($model, 'pdf');
                 if ($fpdf == "" || $fpdf->getHasError()) {
                     $model->addError('pdf', 'Error en archivo pdf');
@@ -128,9 +129,10 @@ class PdfController extends Controller {
             $fpdf = CUploadedFile::getInstance($model, 'pdf');
             if ($fpdf == "" || $fpdf->getHasError()) {
                 $model->name_real = $name_temp;
+                $model->pdf = $_POST['Pdf']['pdf'];
                 if ($model->save()) {
                     Resource::model()->updateResource($model->name_real, $model, false, '');
-                    $this->redirect(array('multimedia/index'));
+                    $this->redirect(array('pdf/admin'));
                 }
             } else {
                 $name_real = $fpdf->getName();
@@ -139,7 +141,7 @@ class PdfController extends Controller {
                 $fpdf->saveAs($model->pdf);
                 Resource::model()->updateResource($model->name_real, $model, true, $name_real);
                 if ($model->save())
-                    $this->redirect(array('multimedia/index'));
+                    $this->redirect(array('pdf/admin'));
             }
         }
 
@@ -243,7 +245,7 @@ class PdfController extends Controller {
         $string = str_replace("+", "", $string);
         //Esta parte se encarga de eliminar cualquier caracter extraño
         $string = str_replace(
-                array("\\", "¨", "º", "-", "~",
+                array("\\", "¨", "º","~",
             "#", "@", "|", "!", "\"",
             "$", "%", "&", "/",
             "(", ")", "?", "'", "¡",

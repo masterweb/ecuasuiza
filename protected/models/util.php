@@ -114,6 +114,18 @@ class Util {
         return $html;
     }
     
+    public static function getImageMultimediaLink($data) {
+        $html = '<img src="'. Yii::app()->request->baseUrl.'/uploads/images/'.$data->image.'" width="30%"/><br><br>'; 
+        $html .= '<p>http://preproduccion.ariadna.us/'. Yii::app()->request->baseUrl.'/uploads/images/'.$data->image.'</p>'; 
+        return $html;
+    }
+    
+    public static function getImageMultimedia($data) {
+        $html = '<img src="'. Yii::app()->request->baseUrl.'/uploads/images/'.$data->image.'" width="90%"/>'; 
+        //$html .= '<p>http://preproduccion.ariadna.us/'. Yii::app()->request->baseUrl.'/uploads/images/'.$data->image.'</p>'; 
+        return $html;
+    }
+    
     public static function getImageSlider($data) {
         $html = '<img src="'. Yii::app()->request->baseUrl.'/img/sliderSeguros/'.$data->link.'" width="60%"/>'; 
         return $html;
@@ -145,6 +157,13 @@ class Util {
 
     public static function getURLArchivarSeguro($model) {
         return Yii::app()->createUrl('adminseguros/archivar', array('id' => $model->id));
+    }
+    public static function getURLAdjuntarArticulo($model) {
+        return Yii::app()->createUrl('articulos/adjuntar', array('id' => $model->id_articulos));
+    } 
+    
+    public static function getURLDeleteAdjunto($model) {
+        return Yii::app()->createUrl('adminseguros/deleteadjunto', array('id' => $model->id));
     }
 
     public static function getURLActivarSeguro($model) {

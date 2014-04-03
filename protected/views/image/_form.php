@@ -13,11 +13,11 @@
 		<?php echo $form->labelEx($model,'categoria'); ?>
 		<?php echo $form->dropDownList($model,'categoria',
                         array('' => '---Seleccione una opción---',
-                            'noticias' => 'Noticias',
-                            'programaEducacion' => 'Programa de Educación',
-                            'leyTransparencia' => 'Ley de Transparencia',
-                            'lavadoActivos' => 'Lavado de Activos',
-                            'glosario' => 'Glosario de Términos',
+                            'noticias1' => 'Noticias 1',
+                            'noticias2' => 'Noticias 2',
+                            'noticias3' => 'Noticias 3',
+                            'quienesSomos' => 'Quienes Somos',
+                            'general' => 'General',
                             )); ?>
 		<?php echo $form->error($model,'categoria'); ?>
 	</div>

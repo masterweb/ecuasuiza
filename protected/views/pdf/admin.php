@@ -40,10 +40,10 @@ $('.search-form form').submit(function(){
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
-		'name',
+		//'name',
 		'descripcion',
 		'categoria',
-		'subcategoria',
+		//'subcategoria',
 		'pdf',
 		array(
 			'class'=>'CButtonColumn',

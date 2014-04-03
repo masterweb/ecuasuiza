@@ -21,6 +21,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/css/wysiwyg-color.css"/>
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/css/bootstrap-fileupload.css" rel="stylesheet"/>
         <link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/css/validationEngine.jquery.css" type="text/css"/>
+        <link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/menudrop.css" type="text/css"/>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/bootstrap.min.js"></script>
         <script  type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/wysihtml5-0.3.0.js"></script>
@@ -31,7 +32,7 @@
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validate.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/bootstrap-fileupload.min.js"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/functions.js"></script>
-        
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/menudrop.js"></script>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
     </head>
 
@@ -42,7 +43,7 @@
                     <?php
                     $this->widget('zii.widgets.CMenu', array(
                         //'htmlOptions' => array('class' => 'nav nav-principal'),
-                        'htmlOptions' => array('class' => 'nav'),
+                        'htmlOptions' => array('class' => 'nav', 'id' => 'menudrop'),
                         'items' => array(
                             array('label' => 'Login', 'url' => array('admin/login'), 'visible' => Yii::app()->user->isAdminUser()),
                             //array('label' => 'Users', 'url' => array('/admin/users'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
@@ -55,7 +56,7 @@
                             array('label' => 'Multimedia', 'url' => array('/admin/multimedia'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
                                 'items' => array(
                                     //array('label' => 'Administrar Pdfs', 'url' => array('pdf/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
-                                    array('label' => 'Subir Imágen', 'url' => array('image/create'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                    array('label' => 'Administrar Imágenes', 'url' => array('image/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
                                     array('label' => 'Administrar PDF', 'url' => array('pdf/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
                                     array('label' => 'Administrar Word', 'url' => array('word/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
                                 )
@@ -69,7 +70,11 @@
                                 'items' => array(
                                     array('label' => 'Administrar', 'url' => array('servicios/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
                                 )),
-                            array('label' => 'Información', 'url' => array('/site/informacion'), 'visible' => !Yii::app()->user->isGuest),
+                            array('label' => 'Artículos', 'url' => array('#'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser(),
+                                'items' => array(
+                                    array('label' => 'Administrar', 'url' => array('articulos/admin'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser()),
+                                )),
+                            //array('label' => 'Artículos', 'url' => array('#'), 'visible' => !Yii::app()->user->isGuest&& Yii::app()->user->isAdminUser()),
                             array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => Yii::app()->user->isGuest && Yii::app()->user->isAdminUser())
                         ),
                     ));
@@ -102,6 +107,8 @@
     </body>
 </html>
 <script>
+    var menudrop=new menudrop.dd("menudrop");
+    menudrop.init("menudrop","menuhover");
     $('.textarea').wysihtml5({
         "html": true //Button which allows you to edit the generated HTML. Default false
     });

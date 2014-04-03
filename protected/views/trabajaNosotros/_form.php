@@ -16,7 +16,7 @@
     'htmlOptions' => array('enctype' => 'multipart/form-data'),
 )); ?>
 
-    <p class="note">Campos con <span class="required">*</span> son requeridos.</p>
+    
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -61,7 +61,7 @@
 	<div class="row">
             <div class="span3">
                 <?php echo $form->labelEx($model,'disponibilidad'); ?>
-		<?php echo $form->dropDownList($model,'disponibilidad',array(''=>'---Seleccione una opción---','opcion1'=>'Opcion 1', 'opcion2'=>'Opcion 2')); ?>
+		<?php echo $form->dropDownList($model,'disponibilidad',array(''=>'---Seleccione una opción---','tiempoCompleto'=>'Tiempo Completo', 'medioTiempo'=>'Medio Tiempo')); ?>
 		<?php echo $form->error($model,'disponibilidad'); ?>
             </div>
             <div class="span3">
@@ -90,6 +90,7 @@
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Enviar' : 'Save', array('id' => 'sendContactenos', 'class' => 'sendNosotros')); ?>
 	</div>
+        <p class="note">Campos con <span class="required">*</span> son requeridos.</p>
 
 <?php $this->endWidget(); ?>
 

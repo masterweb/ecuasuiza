@@ -113,6 +113,7 @@ class NoticiasController extends Controller {
      * Lists all models.
      */
     public function actionIndex() {
+        $this->layout = 'main';
         $dataProvider = new CActiveDataProvider('Noticias');
         $this->render('index', array(
             'dataProvider' => $dataProvider,
@@ -156,6 +157,62 @@ class NoticiasController extends Controller {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
+    }
+    
+    // fecha en formato humano
+    public function getFecha($fecha){
+        $params = explode("-", $fecha);
+        //print_r($params);
+        $year = $params[0];
+        $mes = $params[1];
+        $dia = $params[2];
+        
+        switch ($mes) {
+            case 01:
+                $mesH = 'Enero';
+                break;
+            case 02:
+                $mesH = 'Febrero';
+                break;
+            case 03:
+                $mesH = 'Marzo';
+                break;
+            case 04:
+                $mesH = 'Abril';
+                break;
+            case 05:
+                $mesH = 'Mayo';
+                break;
+            case 06:
+                $mesH = 'Junio';
+                break;
+            case 07:
+                $mesH = 'Julio';
+                break;
+            case 08:
+                $mesH = 'Agosto';
+                break;
+            case 09:
+                $mesH = 'Septiembre';
+                break;
+            case 10:
+                $mesH = 'Octubre';
+                break;
+            case 11:
+                $mesH = 'Noviembre';
+                break;
+            case 12:
+                $mesH = 'Diciembre';
+                break;
+            
+
+            default:
+                break;
+        }
+        
+        //$fechaString = $dia.' de '.$mesH.' del '.$year;
+        $fechaString = $mesH.' '.$year;
+        return $fechaString;
     }
 
 }

@@ -135,10 +135,11 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                                             'condition' => $condition,
                                             'limit' => $limit,
                                             'offset' => $offset,
+                                            'order' => 'title ASC'
                                         ));
 
                                 $segurosEmp = Seguros::model()->findAll($criteria2);
-                                
+
                                 echo '<p class="column-emp">';
                                 foreach ($segurosEmp as $se) {
                                     if ($se['categoria'] == 'empresarial'):
@@ -146,7 +147,7 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                                     endif;
                                 }
                                 echo '</p>';
-                                
+
                                 $condition = 'categoria ="empresarial"';
                                 $limit = $resultado;
                                 $offset = $numFilas;
@@ -154,10 +155,11 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                                             'condition' => $condition,
                                             'limit' => $limit,
                                             'offset' => $offset,
+                                            'order' => 'title ASC'
                                         ));
 
                                 $segurosEmp = Seguros::model()->findAll($criteria2);
-                                
+
                                 echo '<p class="column-emp">';
                                 foreach ($segurosEmp as $se) {
                                     if ($se['categoria'] == 'empresarial'):
@@ -165,7 +167,6 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                                     endif;
                                 }
                                 echo '</p>';
-                                
                                 ?>
                             </ul>
                         </li>
@@ -173,16 +174,16 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                             <ul>
                                 <li><a href="http://secure.ecuasuiza.ec/ecuasuiza/SoloPortal_Logon.asp" target="_blank">Transporte Online</a></li>
                                 <li><a href="<?php echo Yii::app()->createUrl('/site/suizamovil') ?>">Suiza Móvil Plus</a></li>
-                                <li><a href="#" class="no-link">Reclamos</a>
-                                    <ul>
-                                        <?php
-                                        foreach ($servicios as $s) {
-                                            if ($s['categoria'] == 'reclamos'):
-                                                echo '<li><a href="' . Yii::app()->createUrl('/servicios/index', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
-                                            endif;
-                                        }
-                                        ?>
-                                    </ul>    
+                                <li><a href="<?php echo Yii::app()->createUrl('/servicios/index', array('id' => 6)); ?>">Reclamos</a>
+                                    <!--                                    <ul>
+                                    <?php
+                                    foreach ($servicios as $s) {
+                                        if ($s['categoria'] == 'reclamos'):
+                                            echo '<li><a href="' . Yii::app()->createUrl('/servicios/index', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
+                                        endif;
+                                    }
+                                    ?>
+                                                                        </ul>    -->
                                 </li>
                             </ul> 
                         </li>
@@ -280,14 +281,14 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                     </div>
                     <div class="span3" id="social-twitter">
                         <div class="twitter-big">
-                            <img src="<?php echo Yii::app()->request->baseUrl; ?>/img/footer/twitter_big.png" width="50%"/>
+                            <img src="<?php echo Yii::app()->request->baseUrl; ?>/img/footer/twitter_big.png" width="75%"/>
                         </div>
                         <div class="list-twitter">
-                            <a class="twitter-timeline" data-widget-id="446696202617110528" data-chrome="noheader nofooter noborders transparent" data-tweet-limit="3" data-link-color="#4b9e44" data-border-color="#FFFFFF" lang="EN" data-theme="" height="150" width="220" data-screen-name="EcuaSuiza" data-show-replies="false" data-aria-polite="assertive" > </a>
+                            <a class="twitter-timeline" data-widget-id="446696202617110528" data-chrome="noheader nofooter transparent" data-tweet-limit="" data-link-color="#4b9e44" data-border-color="#FFFFFF" lang="EN" data-theme="" height="150" width="220" data-screen-name="EcuaSuiza" data-show-replies="" data-aria-polite="assertive" > </a> 
                             <!-- Thank you for using "TweetsDecoder" <a href="//tweetsdecoder.com"> @TweetsDecoder.COM</a>--> 
                             <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
                         </div>
-                        <!--                        <div class="span2" id="reference">
+                        <!--                        <div class="span2" id="reference2">
                                                     <p>Síguenos en:</p> 
                                                     <ul class="list-unstyled">
                                                         <li><a href=""><img src="<?php echo Yii::app()->request->baseUrl; ?>/img/header/twitter.png"/></a></li>

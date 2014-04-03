@@ -35,7 +35,7 @@ class Pdf extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, descripcion,categoria', 'required'),
+            array('name, descripcion,categoria,keyword', 'required'),
             array('name, name_real, pdf', 'length', 'max' => 255),
             array('pdf', 'file', 'types' => 'pdf'),
             // The following rule is used by search().
@@ -62,6 +62,7 @@ class Pdf extends CActiveRecord {
             'id' => 'Id Pdf',
             'name' => 'Nombre',
             'descripcion' => 'Descripcion',
+            'keyword' => 'Palabra Clave',
             'categoria' => 'Categoria',
             'subcategoria' => 'Sub Categoria',
             'name_real' => 'Nombre Real',

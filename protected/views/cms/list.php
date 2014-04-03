@@ -47,6 +47,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
         ),
         array(
             'class' => 'CButtonColumn',
+            //'template' => '{actualizar} {delete} {archivar} {borrarAdjunto}',
             'template' => '{actualizar} {delete} {archivar}',
             'buttons' => array(
                 'actualizar' => array(
@@ -66,7 +67,13 @@ $this->widget('zii.widgets.grid.CGridView', array(
                     'options' => array(
                         'class' => 'icon-thumbs-down',
                     ),
-                )
+                ),
+//                'borrarAdjunto' => array(
+//                    'url' => 'Util::getURLDeleteAdjunto($data)',
+//                    'options' => array(
+//                        'class' => 'icon-minus-sign',
+//                    ),
+//                )
             ),
         ),
     ),
