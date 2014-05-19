@@ -35,6 +35,13 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
         <script src="<?php echo Yii::app()->request->baseUrl; ?>/bootstrap/js/jquery.validationEngine.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/functions.js"></script>
         <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/menudrop.js"></script>
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/assets/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+        <!-- Add fancyBox -->
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/assets/fancybox/source/jquery.fancybox.pack.js?v=2.1.4"></script>
+        <!-- Optionally add helpers - button, thumbnail and/or media -->
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/assets/fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/assets/fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.5"></script>
+        <script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/assets/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         <?php if ($mobile == false): ?>
             <!--Start of Zopim Live Chat Script-->
@@ -46,6 +53,33 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                         type='text/javascript';e.parentNode.insertBefore($,e)})(document,'script');
             </script>
             <!--End of Zopim Live Chat Script-->
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.fancybox').fancybox();
+                });
+            </script>
+            <style>
+                .form-signin{
+                    width: 50%;
+                    margin: 0 auto;
+                }
+                .data-register a{
+                    color: #555555;
+                    display: block;
+                    text-align: right;
+                }
+                .data-register .link-register{
+                    font-weight: bold;
+                }
+                .register-divisor{
+                    background: none;
+                    border-bottom: 1px dotted #4b9e44 !important;
+                    border-top: none !important;
+                }
+                .form label{
+                    font-size: 15px !important;
+                }
+            </style>
         <?php endif; ?>
         <!--[if lt IE 9]>
         <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
@@ -63,15 +97,29 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
                         <span class="icon-bar"></span>
                     </button>
                     <div class="nav-collapse collapse">
-                        <?php
-                        $this->widget('zii.widgets.CMenu', array(
-                            'htmlOptions' => array("class" => "nav", "id" => "nav-top-menu"),
-                            'items' => array(
-                                array('label' => 'Nosotros', 'url' => array('/site/nosotros', 'id' => 5)),
-                                array('label' => 'Contáctenos', 'url' => array('/site/contactenos'))
-                            ),
-                        ));
-                        ?>
+                        
+                        <?php if (Yii::app()->user->isEditorUser()): ?>
+                            <?php
+                            $this->widget('zii.widgets.CMenu', array(
+                                'htmlOptions' => array("class" => "nav", "id" => "nav-top-menu"),
+                                'items' => array(
+                                    array('label' => 'Nosotros', 'url' => array('/site/nosotros', 'id' => 5)),
+                                    array('label' => 'Contáctanos', 'url' => array('/site/contactenos')),
+                                    array('label' => 'Cerrar Sesión', 'url' => array('/site/logout'))
+                                ),
+                            ));
+                            ?>
+                        <?php else: ?>
+                            <?php
+                            $this->widget('zii.widgets.CMenu', array(
+                                'htmlOptions' => array("class" => "nav", "id" => "nav-top-menu"),
+                                'items' => array(
+                                    array('label' => 'Nosotros', 'url' => array('/site/nosotros', 'id' => 5)),
+                                    array('label' => 'Contáctanos', 'url' => array('/site/contactenos'))
+                                ),
+                            ));
+                            ?>
+                        <?php endif; ?>
                         <div class="navbar-text pull-right">
                             <div class="span2" id="reference">
                                 <p>Síguenos en:</p> 
@@ -101,133 +149,16 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
             </div>
             <div class="navbar">
                 <div class="navbar-inner navbar-ecu">
-                    <ul class="nav nav-principal menudrop" id="menudrop">
-                        <li><a href="#" class="no-link">Seguros Individuales</a>
-                            <ul class="seguros-ind">
-                                <?php
-                                foreach ($seguros as $s) {
-                                    if (($s['categoria'] == 'hogar') || ($s['categoria'] == 'auto') || ($s['categoria'] == 'vida')):
-                                        echo '<li><a href="' . Yii::app()->createUrl('/seguros/individuales', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
-                                    endif;
-                                }
-                                ?>
-                            </ul> 
-                        </li>
-                        <li><a href="#" class="no-link">Seguros Empresariales</a>
-                            <ul class="sub-empresariales">
-                                <?php
-                                $condition = 'categoria ="empresarial"';
-
-                                $criteria = new CDbCriteria(array(
-                                            'condition' => $condition,
-                                            'order' => 'title ASC'
-                                        ));
-
-                                $segurosEmp = Seguros::model()->findAll($criteria);
-                                $resultado = count($segurosEmp);
-                                $numFilas = ceil($resultado / 2);
-                                //echo $numFilas;
-                                $condition = 'categoria ="empresarial"';
-                                $limit = $numFilas;
-                                $offset = 0;
-
-                                $criteria2 = new CDbCriteria(array(
-                                            'condition' => $condition,
-                                            'limit' => $limit,
-                                            'offset' => $offset,
-                                            'order' => 'title ASC'
-                                        ));
-
-                                $segurosEmp = Seguros::model()->findAll($criteria2);
-
-                                echo '<p class="column-emp">';
-                                foreach ($segurosEmp as $se) {
-                                    if ($se['categoria'] == 'empresarial'):
-                                        echo '<a href="' . Yii::app()->createUrl('/seguros/empresariales', array('id' => $se['id'])) . '">' . $se['title'] . '</a>';
-                                    endif;
-                                }
-                                echo '</p>';
-
-                                $condition = 'categoria ="empresarial"';
-                                $limit = $resultado;
-                                $offset = $numFilas;
-                                $criteria2 = new CDbCriteria(array(
-                                            'condition' => $condition,
-                                            'limit' => $limit,
-                                            'offset' => $offset,
-                                            'order' => 'title ASC'
-                                        ));
-
-                                $segurosEmp = Seguros::model()->findAll($criteria2);
-
-                                echo '<p class="column-emp">';
-                                foreach ($segurosEmp as $se) {
-                                    if ($se['categoria'] == 'empresarial'):
-                                        echo '<a href="' . Yii::app()->createUrl('/seguros/empresariales', array('id' => $se['id'])) . '">' . $se['title'] . '</a>';
-                                    endif;
-                                }
-                                echo '</p>';
-                                ?>
-                            </ul>
-                        </li>
-                        <li><a href="#" class="no-link">Servicios</a>
-                            <ul>
-                                <li><a href="http://secure.ecuasuiza.ec/ecuasuiza/SoloPortal_Logon.asp" target="_blank">Transporte Online</a></li>
-                                <li><a href="<?php echo Yii::app()->createUrl('/site/suizamovil') ?>">Suiza Móvil Plus</a></li>
-                                <li><a href="<?php echo Yii::app()->createUrl('/servicios/index', array('id' => 6)); ?>">Reclamos</a>
-                                    <!--                                    <ul>
-                                    <?php
-                                    foreach ($servicios as $s) {
-                                        if ($s['categoria'] == 'reclamos'):
-                                            echo '<li><a href="' . Yii::app()->createUrl('/servicios/index', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
-                                        endif;
-                                    }
-                                    ?>
-                                                                        </ul>    -->
-                                </li>
-                            </ul> 
-                        </li>
-                        <li><a href="#" class="no-link">Información</a>
-                            <ul>
-                                <li><a href="<?php echo Yii::app()->createUrl('/noticias/'); ?>">Noticias</a></li>
-                                <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('cat' => 'programaEducacion')); ?>">Programa de Educación Financiera</a></li>
-                                <li><a href="#" class="no-link">Ley de Transparencia</a>
-                                    <ul>
-                                        <!--<li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('cat' => 'gobiernoCorporativo')); ?>">Gobierno Corporativo</a></li>-->
-                                        <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('subcat' => 'informacionFinanciera')); ?>">Información Financiera</a></li>
-                                        <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('subcat' => 'indicadoresServicioCliente')); ?>">Indicadores de Servicio al Cliente</a></li>
-                                        <!--<li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('subcat' => 'informacionAccionistas')); ?>">Información de accionistas </a></li>-->
-                                    </ul>
-                                </li>
-                                <!--<li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('cat' => 'gobiernoCorporativo')); ?>">Gobierno Corporativo</a></li>-->
-                                <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('cat' => 'lavadoActivos')); ?>">Lavado de Activos</a>
-                                    <!--                                    <ul>
-                                                                            <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('subcat' => 'manualPrevencion')); ?>">Manual de Prevención</a></li>
-                                                                            <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('subcat' => 'formularioPersonaNatural')); ?>">Persona Natural</a></li>
-                                                                            <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('subcat' => 'formularioPersonaJuridica')); ?>">Persona Jurídica</a></li>
-                                                                        </ul>-->
-                                </li>
-                                <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('cat' => 'glosario')); ?>">Glosario de Términos</a></li>
-                                <li><a href="<?php echo Yii::app()->createUrl('/informacion/index', array('cat' => 'preguntasFrecuentes')); ?>">Preguntas Frecuentes</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <?php
-//                    $this->widget('zii.widgets.CMenu', array(
-//                        'htmlOptions' => array('class' => 'nav nav-principal'),
-//                        'items' => array(
-//                            array('label' => 'Seguros Individuales', 'url' => array('/site/index')),
-//                            array('label' => 'Seguros Empresariales', 'url' => array('/seguros/empresariales'),
-//                                'items' => array(
-//                                    array('label' => 'Slider', 'url' => array('admin/slider'))
-//                                )
-//                                ),
-//                            array('label' => 'Servicios', 'url' => array('/servicios')),
-//                            array('label' => 'Información', 'url' => array('/site/informacion'), 'visible' => Yii::app()->user->isGuest),
-//                            array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest)
-//                        ),
-//                    ));
+                    <?php 
+                    $categorias = Categorias::model()->findAll(array('order' => 'pos'));
                     ?>
+                    <ul class="nav nav-principal menudrop" id="menudrop">
+                        <?php foreach ($categorias as $cat) { ?>
+                            <li><a href="#" class="no-link"><?php echo $cat['title_categoria']; ?></a>
+                               <?php echo $this->getSubSecciones($cat['id']); ?>
+                            </li>
+                        <?php } ?>
+                    </ul>
                 </div>
             </div>
             <div class="row">
@@ -245,34 +176,21 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
             <?php endif ?>
 
             <?php echo $content; ?>
-            <?php
-//            foreach ($seguros as $s) {
-//                echo 'categoria-----------' . $categoria = $s['categoria'].'<br>';
-//            }
-            ?>    
             <div class="clear"></div>
-            <!--            <div class="row">
-                            <div class="span2 offset8 chat">
-                                <a href="<?php echo Yii::app()->createUrl('site/chat') ?>">
-                                    <img src="<?php echo Yii::app()->request->baseUrl; ?>/img/chat.png" title="Horario de 8:30 a 10:00 y 14:30 a 16:00" class="chat-tool"/>
-                                </a> 
-                            </div>
-                        </div>-->
             <div class="row">
                 <div class="span11" id="divisor-up">
                     <img src="<?php echo Yii::app()->request->baseUrl; ?>/img/divisor_up.gif"/> 
                 </div>
             </div>
             <div id="footer">
-
                 <div class="row">
                     <div class="span7">
                         <ul class="access-links">
                             <li><a href="<?php echo Yii::app()->createUrl('site/index') ?>">Inicio</a></li>
-                            <li><a href="<?php echo Yii::app()->createUrl('seguros/individuales', array('id' => 53)) ?>">Seguros Individuales</a></li>
+                            <li><a href="<?php echo Yii::app()->createUrl('seguros/individuales') ?>">Seguros Individuales</a></li>
                             <li><a href="<?php echo Yii::app()->createUrl('seguros/empresariales') ?>">Seguros Empresariales</a></li>
-                            <li><a href="http://secure.ecuasuiza.ec/ecuasuiza/SoloPortal_Logon.asp" target="_blank">Servicios</a></li>
-                            <li><a href="<?php echo Yii::app()->createUrl('/noticias/'); ?>">Información</a></li>
+                            <li><a href="<?php echo Yii::app()->createUrl('/servicios/'); ?>">Servicios</a></li>
+                            <li><a href="<?php echo Yii::app()->createUrl('/informacion/info'); ?>">Información</a></li>
                             <li><a href="<?php echo Yii::app()->createUrl('site/nosotros', array('id' => 5)); ?>">Nosotros</a></li>
                             <li><a href="<?php echo Yii::app()->createUrl('site/contactenos/'); ?>">Contáctenos</a></li>
                         </ul>
@@ -301,6 +219,30 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
             </div><!-- footer -->
 
         </div><!-- page -->
+        <div id="inline1" style="display: none; width: 500px;">
+
+            <div class="form">
+                <form class="form-signin" action="/ecuasuiza/index.php/admin/loginEditor" method="post" id="form-login">
+                    <div id="error-login" style="color:#4b9e44"></div>
+                    <div class="row">
+                        <label for="LoginForm_Usuario">Usuario:</label>
+                        <input name="LoginForm[username]" id="LoginForm_username" type="text">
+                    </div>
+                    <div class="row">
+                        <label for="LoginForm_Password">Contraseña:</label>
+                        <input name="LoginForm[password]" id="LoginForm_password" type="password">
+                    </div>
+                    <div class="row submit">
+                        <input type="submit" name="yt0" value="Ingresar" id="ingresar">
+                    </div>
+                </form>
+                <hr class="register-divisor">
+                <div class="data-register">
+<!--                    <a href="<?php echo Yii::app()->createUrl('user/create') ?>" class="link-register">Registrarme</a>-->
+                    <a href="#" style="text-decoration: underline;">*No recuerdo mis datos</a>
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>
