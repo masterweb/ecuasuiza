@@ -10,29 +10,38 @@ $articulo = Articulos::model()->findByAttributes(array('id_articulos' => $id));
 $this->widget('zii.widgets.CBreadcrumbs', array(
     'links' => array(
         'Nosotros',
-        '¿Quiénes somos?'
+        $articulo['title']
     ),
     'homeLink' => CHtml::link('Inicio', Yii::app()->homeUrl),
 ));
+$criteria = new CDbCriteria(array("condition" => "categoria='nosotros'","order" => 'orden'));
+$art = Articulos::model()->findAll($criteria);
 ?>
 <div class="row">
     <div class="span3">
-        <ul class="page-sidebar-menu" id="yw0">
+<!--        <ul class="page-sidebar-menu" id="yw0">
             <li><?php if($id == 5){echo 'Nosotros';}elseif($id == 12){echo 'Historia';}  ?>
                 <ul>
                     <li <?php if($id == 5):?>class="active" <?php endif; ?>><a href="<?php echo Yii::app()->createUrl('site/nosotros' ,array('id'=>5)) ?>">¿Quiénes Somos? </a></li>
                     <li <?php if($id == 12):?>class="active" <?php endif; ?>><a href="<?php echo Yii::app()->createUrl('site/nosotros' ,array('id'=>12)) ?>">Historia </a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('site/misionvision', array('id' => 10)) ?>">Misión Visión</a></li>
-                    <!--<li <?php if($id == 13):?>class="active" <?php endif; ?>><a href="<?php echo Yii::app()->createUrl('site/nosotros', array('id' => 13)) ?>">Politica de Calidad</a></li>-->
+                    <li><a href="<?php echo Yii::app()->createUrl('site/misionvision', array('id' => 10)) ?>">Misión y Visión</a></li>
+                    <li <?php if($id == 13):?>class="active" <?php endif; ?>><a href="<?php echo Yii::app()->createUrl('site/nosotros', array('id' => 13)) ?>">Politica de Calidad</a></li>
                     <li><a href="<?php echo Yii::app()->createUrl('site/reaseguradores', array('id' => 6)) ?>">Reaseguradores</a></li>
                     <li><a href="<?php echo Yii::app()->createUrl('site/proyectos', array('id' => 9)) ?>">Proyectos</a></li>
                 </ul>
             </li>
-
+        </ul>-->
+        <ul class="page-sidebar-menu" id="yw0" style="display: block;">
+            <li><?php if($id == 12){echo 'Historia';}else{echo 'Nosotros';}  ?>
+                <ul>
+                <?php foreach ($art as $value) { ?>
+                    <li <?php if($value['id_articulos'] == $id):?>class="active" <?php endif; ?>><a href="<?php echo Yii::app()->createUrl('site/nosotros' ,array('id'=>$value['id_articulos'])) ?>"><?php echo $value['title'] ?></a></li>
+                <?php } ?>
+                </ul>
+            </li>
         </ul>
     </div>
     <div class="span7 nosotros" id="cont-hogar">
-        
         <div class="hogar-title-qs">
             <h2><?php echo $articulo['title']; ?></h2>
         </div>
@@ -40,9 +49,7 @@ $this->widget('zii.widgets.CBreadcrumbs', array(
         <img src="<?php echo Yii::app()->request->baseUrl; ?>/img/noticias/<?php echo $articulo['link_img']; ?>"/>
         <br><br>
         <?php endif; ?>
-        
         <div class="art-qs"><?php echo $articulo['contenido']; ?></div>
-
     </div>
     <?php if($id == 13): ?>
     <div class="row">
