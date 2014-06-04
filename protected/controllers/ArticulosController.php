@@ -23,25 +23,25 @@ class ArticulosController extends Controller {
      * This method is used by the 'accessControl' filter.
      * @return array access control rules
      */
-    public function accessRules() {
-        return array(
-            array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('index', 'view','create','admin','update','delete','adjuntar'),
-                'users' => array('*'),
-            ),
-            array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('create', 'update'),
-                'users' => array('@'),
-            ),
-            array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions' => array('admin', 'delete'),
-                'users' => array('admin'),
-            ),
-            array('deny', // deny all users
-                'users' => array('*'),
-            ),
-        );
-    }
+//    public function accessRules() {
+//        return array(
+//            array('allow', // allow all users to perform 'index' and 'view' actions
+//                'actions' => array('index', 'view', 'create', 'admin', 'update', 'delete', 'adjuntar'),
+//                'users' => array('*'),
+//            ),
+//            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+//                'actions' => array('create', 'update'),
+//                'users' => array('@'),
+//            ),
+//            array('allow', // allow admin user to perform 'admin' and 'delete' actions
+//                'actions' => array('admin', 'delete'),
+//                'users' => array('admin'),
+//            ),
+//            array('deny', // deny all users
+//                'users' => array('*'),
+//            ),
+//        );
+//    }
 
     /**
      * Displays a particular model.
@@ -59,15 +59,64 @@ class ArticulosController extends Controller {
      */
     public function actionCreate() {
         $model = new Articulos;
-
+        $_SESSION['KCFINDER']['disabled'] = true; // enables the file browser in the admin
+        $_SESSION['KCFINDER']['uploadURL'] = Yii::app()->baseUrl . "/uploads/"; // URL for the uploads folder
+        $_SESSION['KCFINDER']['uploadDir'] = Yii::app()->basePath . "/../uploads/"; // path to the uploads folder
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
         if (isset($_POST['Articulos'])) {
+            $categoria = '';
+            if (isset($_GET['categoria']))
+                $categoria = $_GET['categoria'];
             $model->attributes = $_POST['Articulos'];
+            $model->categoria = $categoria;
             $model->fecha = date("Y-m-d");
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id_articulos));
+            if (isset($_POST['Articulos']['principal'])) {
+                $model->principal = $_POST['Articulos']['principal'];
+            }
+            if ($_POST['Articulos']['principal'] == 0 && $_POST['Articulos']['principal'] != '') {
+                $model->id_menu_principal = $_POST['Articulos']['id_menu_principal'];
+                $this->setMenuPrincipal($_POST['Articulos']['id_menu_principal']);
+            }
+            // get array of images for nivo slider galery
+            $photos = CUploadedFile::getInstancesByName('photos');
+            // proceed if the images have been set
+            if (isset($photos) && count($photos) > 0) {
+                // go through each uploaded image
+                $spic = '';
+                foreach ($photos as $image => $pic) {
+                    if ($pic->saveAs(Yii::getPathOfAlias('webroot') . '/uploads/images/' . $pic->name)) {
+                        // add string to field link_string in table tbl_articulos
+                        //echo 'archivo subido';
+//                        $model->link_string = Yii::getPathOfAlias('webroot') . '/uploads/images/' . $pic->name;
+//                        $image = Yii::app()->image->load($model->link_string);
+//                        $image->resize(347, 188)->quality(100);
+//                        $image->save();
+                        $spic .= $pic->name . '@';
+                    } else {
+                        //echo 'Cannot upload!';
+                    }
+                }
+                $model->link_string = $spic; // save string of images for nivo slider
+                $model->galeria = 1; // save 1 if gallery exists
+            }
+            if ($_POST['Articulos']['has_image'] == 'Si') {
+                // subir miniatura de la noticia al servidor
+                $archivoThumb = CUploadedFile::getInstance($model, 'thumb');
+                $fileName = "{$archivoThumb}";  // file name
+
+                if (!$archivoThumb->getHasError()) {
+                    $model->thumb = $fileName;
+                    if ($model->save()) {
+                        $archivoThumb->saveAs(Yii::getPathOfAlias("webroot") . "/img/noticias/thumbs/" . $fileName);
+                        $this->redirect(array('articulos/admin', 'categoria' => $categoria));
+                    }
+                }
+            } else {
+                if ($model->save())
+                    $this->redirect(array('articulos/admin', 'categoria' => $categoria));
+            }
         }
 
         $this->render('create', array(
@@ -81,6 +130,9 @@ class ArticulosController extends Controller {
      * @param integer $id the ID of the model to be updated
      */
     public function actionUpdate($id) {
+        $_SESSION['KCFINDER']['disabled'] = true; // enables the file browser in the admin
+        $_SESSION['KCFINDER']['uploadURL'] = Yii::app()->baseUrl . "/uploads/"; // URL for the uploads folder
+        $_SESSION['KCFINDER']['uploadDir'] = Yii::app()->basePath . "/../uploads/"; // path to the uploads folder
         $model = $this->loadModel($id);
 
         // Uncomment the following line if AJAX validation is needed
@@ -88,18 +140,19 @@ class ArticulosController extends Controller {
 
         if (isset($_POST['Articulos'])) {
             $model->attributes = $_POST['Articulos'];
-            if ($model->save())
-                $this->redirect(array('articulos/admin'));
+            if ($model->save()) {
+                $this->redirect(array('articulos/admin', 'id' => $id));
+            }
         }
 
         $this->render('update', array(
-            'model' => $model,
+            'model' => $model, 'id' => $id
         ));
     }
-    
+
     // adjuntar una foto thumb a la noticia
-    public function actionAdjuntar($id){
-        
+    public function actionAdjuntar($id) {
+
         $model = new Articulos;
         if (isset($_POST['Articulos'])) {
             die('articulos');
@@ -109,13 +162,112 @@ class ArticulosController extends Controller {
         ));
     }
 
+    public function actionGetdesplegables() {
+        //$sql = "SELECT id, modelo, submodelo FROM tbl_marcas WHERE marca='{$modeloAuto}' GROUP BY submodelo ORDER BY modelo";
+        $idarticulo = isset($_POST["idarticulo"]) ? $_POST["idarticulo"] : "";
+        //die('id articulo: '.$idarticulo);
+        $criteria = new CDbCriteria(array(
+                    'condition' => "id_articulo='{$idarticulo}' AND titulo_cat <> ''",
+                    'group' => 'titulo_cat'
+                ));
+        $pdfs = Pdf::model()->count($criteria);
+        $data = '';
+        $count = 0;
+        if ($pdfs > 0) {
+            $pdfAll = Pdf::model()->findAll($criteria);
+            foreach ($pdfAll as $value) {
+                $data .= '<option value="">--Seleccione--</option><option value="' . $value['titulo_cat'] . '">' . $value['titulo_cat'] . '</option>';
+            }
+            $count = 1;
+        }else{
+            $data .= '<option value="">--Seleccione--</option>
+                <option value="nuevo">Nuevo Desplegable</option>
+                <option value="ninguno">Ninguno</option>';
+        }
+        $options = array('options' => $data, 'pdfs' => $count);
+        echo json_encode($options);
+    }
+
+    public function actionGetmenus() {
+        //$sql = "SELECT id, modelo, submodelo FROM tbl_marcas WHERE marca='{$modeloAuto}' GROUP BY submodelo ORDER BY modelo";
+        $categoria = isset($_POST["categoria"]) ? $_POST["categoria"] : "";
+        $criteria = new CDbCriteria(array(
+                    'condition' => "categoria='{$categoria}' and principal = 1"
+                ));
+        $art = Articulos::model()->findAll($criteria);
+        $data = '<option value="">--Seleccione--</option>';
+        foreach ($art as $value) {
+            $data .= '<option value="' . $value['id_articulos'] . '">' . $value['title'] . '</option>';
+        }
+        $options = array('options' => $data);
+        echo json_encode($options);
+    }
+
+    public function actionGetsubmenus() {
+        //$sql = "SELECT id, modelo, submodelo FROM tbl_marcas WHERE marca='{$modeloAuto}' GROUP BY submodelo ORDER BY modelo";
+        $categoria = isset($_POST["menu"]) ? $_POST["menu"] : "";
+        $menus = array('none', 'nosotros', 'contactanos', 'individuales', 'empresarial', 'servicios', 'informacion');
+        switch ($categoria) {
+            case 1:// informacion, nosotros, contactenos
+            case 2:
+            case 6:
+                $criteria = new CDbCriteria(array(
+                            'condition' => "categoria='{$menus[$categoria]}'"
+                        ));
+                $art = Articulos::model()->findAll($criteria);
+                $data = '<option value="">--Seleccione--</option>';
+                foreach ($art as $value) {
+                    $data .= '<option value="' . $value['id_articulos'] . '">' . $value['title'] . '</option>';
+                }
+                break;
+            case 3:// seguros individuales, empresariales
+            case 4:
+                $criteria = new CDbCriteria(array(
+                            'condition' => "categoria='{$menus[$categoria]}'"
+                        ));
+                $seguros = Seguros::model()->findAll($criteria);
+                $data = '<option value="">--Seleccione--</option>';
+                foreach ($seguros as $value) {
+                    $data .= '<option value="' . $value['id'] . '">' . $value['title'] . '</option>';
+                }
+                break;
+            case 5:// servicios
+                $servicios = Servicios::model()->findAll(array('order' => 'orden'));
+                $data = '<option value="">--Seleccione--</option>';
+                foreach ($servicios as $value) {
+                    $data .= '<option value="' . $value['id'] . '">' . $value['title'] . '</option>';
+                }
+                break;
+            case 7:// noticias
+                $criteria = new CDbCriteria(array(
+                            'condition' => "categoria='news' and principal = 1"
+                        ));
+                $art = Articulos::model()->findAll($criteria);
+                $data = '<option value="">--Seleccione--</option>';
+                foreach ($art as $value) {
+                    $data .= '<option value="' . $value['id_articulos'] . '">' . $value['title'] . '</option>';
+                }
+                break;
+
+            default:
+                break;
+        }
+        $options = array('options' => $data);
+        echo json_encode($options);
+    }
+
     /**
      * Deletes a particular model.
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
      */
     public function actionDelete($id) {
+        $sub = $this->getMenuTipo($id);
+        if ($sub == 1) {
+            $this->setMenuNormal($id);
+        }
         $this->loadModel($id)->delete();
+
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))
@@ -137,10 +289,14 @@ class ArticulosController extends Controller {
      * Manages all models.
      */
     public function actionAdmin() {
+        $id = "";
+        if (isset($_GET['categoria']))
+            $id = $_GET['categoria'];
         $model = new Articulos('search');
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Articulos']))
             $model->attributes = $_GET['Articulos'];
+        $model->categoria = $id;
 
         $this->render('admin', array(
             'model' => $model,
@@ -171,15 +327,15 @@ class ArticulosController extends Controller {
             Yii::app()->end();
         }
     }
-    
+
     // fecha en formato humano
-    public function getFecha($fecha){
+    public function getFecha($fecha) {
         $params = explode("-", $fecha);
         //print_r($params);
         $year = $params[0];
         $mes = $params[1];
         $dia = $params[2];
-        
+
         switch ($mes) {
             case 01:
                 $mesH = 'enero';
@@ -217,14 +373,40 @@ class ArticulosController extends Controller {
             case 12:
                 $mesH = 'diciembre';
                 break;
-            
+
 
             default:
                 break;
         }
-        
-        $fechaString = $dia.' de '.$mesH.' del '.$year;
+
+        $fechaString = $dia . ' de ' . $mesH . ' del ' . $year;
         return $fechaString;
+    }
+
+    // cambiar a submenu el menu principal
+    private function setMenuPrincipal($id) {
+        $con = Yii::app()->db;
+        $sql = "UPDATE tbl_articulos SET submenu = 1 WHERE id_articulos = {$id}";
+        //die('sql: '.$sql);
+        $request = $con->createCommand($sql)->query();
+    }
+
+    private function setMenuNormal($id) {
+        $con = Yii::app()->db;
+        $sql = "UPDATE tbl_articulos SET submenu = 0 WHERE id_articulos = {$id}";
+        //die('sql: '.$sql);
+        $request = $con->createCommand($sql)->query();
+    }
+
+    private function getMenuTipo($id) {
+        $con = Yii::app()->db;
+        //die('sql: '.$sql);
+        $user = Yii::app()->db->createCommand()
+                ->select('submenu')
+                ->from('tbl_articulos')
+                ->where('id_articulos=:id', array(':id' => $id))
+                ->queryRow();
+        return $user['submenu'];
     }
 
 }

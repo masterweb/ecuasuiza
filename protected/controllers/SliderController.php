@@ -59,15 +59,29 @@ class SliderController extends Controller {
      */
     public function actionCreate() {
         $model = new Slider;
-        
+
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
         if (isset($_POST['Slider'])) {
+
             $model->attributes = $_POST['Slider'];
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id));
+            $model->fecha = date("Y-m-d");
+            $archivoImg = CUploadedFile::getInstance($model, 'link');
+            $fileName = "{$archivoImg}";  // file name
+            //die('filename:  '.$fileName);
+            if (!$archivoImg->getHasError() && $archivoImg != '') {
+                $model->link = $fileName;
+                $archivoImg->saveAs(Yii::getPathOfAlias("webroot") . "/img/sliderSeguros/" . $fileName);
+                if ($model->save())
+                    $this->redirect(array('view', 'id' => $model->id));
+            }else {
+
+                $this->render('create', array(
+                    'model' => $model,
+                ));
+            }
         }
 
         $this->render('create', array(

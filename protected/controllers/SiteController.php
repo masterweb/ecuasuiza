@@ -83,20 +83,33 @@ class SiteController extends Controller {
     public function actionContactenos() {
         $model = new Contactenos;
         if (isset($_POST['Contactenos'])) {
+            require_once 'email/mail_func.php';
             $model->attributes = $_POST['Contactenos'];
             $model->fecha = date("Y-m-d G:i:s");
             if ($model->validate()) {
                 $model->save();
-//                $name = '=?UTF-8?B?' . base64_encode($model->nombres) . '?=';
-//                $subject = '=?UTF-8?B?' . base64_encode($model->subject) . '?=';
-//                $headers = "From: $name <{$model->email}>\r\n" .
-//                        "Reply-To: {$model->email}\r\n" .
-//                        "MIME-Version: 1.0\r\n" .
-//                        "Content-Type: text/plain; charset=UTF-8";
-//
-//                mail(Yii::app()->params['adminEmail'], $subject, $model->body, $headers);
-                Yii::app()->user->setFlash('contactenos', 'Gracias por contactarse con nosotros. Le responderemos lo más pronto posible');
-                $this->refresh();
+                $body = '<table border=0>
+                            <tr><td><b>Formulario enviado desde la página de contáctanos :</b></td></tr>
+                            <tr><td><b>Nombres:</b></td><td>' . $_POST['Contactenos']['nombres'] . '</td></tr>
+                            <tr><td><b>Apellidos:</b></td><td>' . $_POST['Contactenos']['apellidos'] . '</td></tr>
+                            <tr><td><b>Provincia:</b></td><td>' . $this->getProvincia($_POST['Contactenos']['provincia']) . '</td></tr>
+                            <tr><td><b>Ciudad:</b></td><td>' . $this->getCiudad($_POST['Contactenos']['ciudad']) . '</td></tr>
+                            <tr><td><b>Tema de Contacto:</b></td><td>' . $this->sanear_string($_POST['Contactenos']['tema']) . '</td></tr>
+                            <tr><td><b>Teléfono:</b></td><td>' . $_POST['Contactenos']['telefono'] . '</td></tr>
+                            <tr><td><b>Celular:</b></td><td>' . $_POST['Contactenos']['celular'] . '</td></tr>
+                            <tr><td><b>Email:</b></td><td>' . $_POST['Contactenos']['email'] . '</td></tr> 
+                            <tr><td><b>Comentarios:</b></td><td>' . $_POST['Contactenos']['comentarios'] . '</td></tr>
+                            </table>';
+                $codigohtml = $body;
+                $headers = 'From: jorge.rodriguez@ariadna.com.ec' . "\r\n";
+                $headers .= 'Content-type: text/html' . "\r\n";
+
+                $asunto = 'Formulario enviado desde Ecuasuiza Ecuador';
+                if (sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'servicioalcliente@ecuasuiza.ec', html_entity_decode($asunto), $codigohtml, 'utf-8')) {
+                    // $email = 'servicioalcliente@ecuasuiza.ec';
+                    Yii::app()->user->setFlash('contactenos', 'Gracias por contactarse con nosotros. Le responderemos lo más pronto posible');
+                    $this->refresh();
+                }
             }
         }
         $this->render('contactenos', array('model' => $model));
@@ -166,7 +179,7 @@ class SiteController extends Controller {
      */
     public function actionLogout() {
         Yii::app()->user->logout();
-        $this->redirect($this->createUrl('admin/login'));
+        $this->redirect($this->createUrl('site/index'));
     }
 
     public function actionNosotros() {
@@ -197,4 +210,225 @@ class SiteController extends Controller {
         $this->render('oficinas', array('model' => $model));
     }
 
+    public function actionGetUserPassword() {
+        $username = isset($_POST['username']) ? $_POST['username'] : "";
+        $password = isset($_POST['password']) ? $_POST['password'] : "";
+        $password = md5($password);
+
+        $criteria = new CDbCriteria(array(
+                    'condition' => "username='{$username}' AND password='{$password}'"
+                ));
+        $data = TblUser::model()->find($criteria);
+        if ($data === null) {
+            $val = false;
+        } else {
+            $val = true;
+        }
+
+        $options = array('validate' => $val);
+        echo json_encode($options);
+    }
+
+    public function actionGetnoticias() {
+        $categoria = isset($_POST["categoria"]) ? $_POST["categoria"] : "";
+        $criteria = new CDbCriteria(array('condition' => 'categoria="news"', 'order' => 'fecha DESC'));
+
+        $noticias = Articulos::model()->findAll($criteria);
+        $data = '<option value="">--Seleccione una noticia--</option>';
+        foreach ($noticias as $value) {
+            $data .= '<option value="'.$value['id_articulos'].'">'.$value['title'].'</option>';
+        }
+        $options = array('options' => $data);
+        echo json_encode($options);
+    }
+
+    private function sanear_string($string) {
+        $string = (string) $string;
+        $string = trim($string);
+
+        $string = str_replace(
+                array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'), array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'), $string
+        );
+
+        $string = str_replace(
+                array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'), array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'), $string
+        );
+
+        $string = str_replace(
+                array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'), array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'), $string
+        );
+
+        $string = str_replace(
+                array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'), array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'), $string
+        );
+
+        $string = str_replace(
+                array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'), array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'), $string
+        );
+
+        $string = str_replace(
+                array('ñ', 'Ñ', 'ç', 'Ç'), array('n', 'N', 'c', 'C',), $string
+        );
+        $string = str_replace("+", "", $string);
+        //Esta parte se encarga de eliminar cualquier caracter extraño
+        $string = str_replace(
+                array("\\", "¨", "º", "-", "~",
+            "#", "@", "|", "!", "\"",
+            "$", "%", "&", "/",
+            "(", ")", "?", "'", "¡",
+            "¿", "[", "^", "`", "]",
+            "}", "{", "¨", "´",
+            ">", "< ", ";", ",", ":",
+            "+"), ' ', $string
+        );
+
+
+        return $string;
+    }
+
+    private function getProvincia($idProvincia) {
+        //$sql = "SELECT id, modelo, submodelo FROM tbl_marcas WHERE marca='{$modeloAuto}' GROUP BY submodelo ORDER BY modelo";
+
+        $criteria = new CDbCriteria(array(
+                    'condition' => "id_provincia='{$idProvincia}'"
+                ));
+        $provincia = Provincias::model()->findAll($criteria);
+        $data = '';
+        foreach ($provincia as $prov) {
+            $data = $prov['nombre'];
+        }
+        return $data;
+    }
+
+    private function getCiudad($idCiudad) {
+        $criteria = new CDbCriteria(array(
+                    'condition' => "id_ciudad='{$idCiudad}'"
+                ));
+        $ciudades = Ciudades::model()->findAll($criteria);
+        $data = '';
+        foreach ($ciudades as $ciud) {
+            $data = $ciud['nombre'];
+        }
+        return $data;
+    }
+
+//    public function getSubSecciones($id) {
+//        $subseccion = Subcategorias::model()->findAllByAttributes(array("id_categoria" => $id), array('order' => 'posicion'));
+//
+//        $ss = '';
+//        switch ($id) {
+//            case 1:
+//                $seguros = Seguros::model()->findAll(array('order' => 'categoria'));
+//                $ss = "<ul class='seguros-ind'>";
+//                foreach ($seguros as $s) {
+//                    if (($s['categoria'] == 'hogar') || ($s['categoria'] == 'auto') || ($s['categoria'] == 'vida')):
+//                        $ss.= '<li><a href="' . Yii::app()->createUrl('/seguros/individuales', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
+//                    endif;
+//                }
+//                $ss .= '</ul>';
+//                break;
+//            case 2:
+//                $ss = "<ul class='sub-empresariales'>";
+//                $condition = 'categoria ="empresarial"';
+//
+//                $criteria = new CDbCriteria(array(
+//                            'condition' => $condition,
+//                            'order' => 'title ASC'
+//                        ));
+//
+//                $segurosEmp = Seguros::model()->findAll($criteria);
+//                $resultado = count($segurosEmp);
+//                $numFilas = ceil($resultado / 2);
+//                //echo $numFilas;
+//                $condition = 'categoria ="empresarial"';
+//                $limit = $numFilas;
+//                $offset = 0;
+//
+//                $criteria2 = new CDbCriteria(array(
+//                            'condition' => $condition,
+//                            'limit' => $limit,
+//                            'offset' => $offset,
+//                            'order' => 'title ASC'
+//                        ));
+//
+//                $segurosEmp = Seguros::model()->findAll($criteria2);
+//
+//                $ss .= '<p class="column-emp">';
+//                foreach ($segurosEmp as $se) {
+//                    if ($se['categoria'] == 'empresarial'):
+//                        $ss .= '<a href="' . Yii::app()->createUrl('/seguros/empresariales', array('id' => $se['id'])) . '">' . $se['title'] . '</a>';
+//                    endif;
+//                }
+//                $ss .= '</p>';
+//
+//                $condition = 'categoria ="empresarial"';
+//                $limit = $resultado;
+//                $offset = $numFilas;
+//                $criteria2 = new CDbCriteria(array(
+//                            'condition' => $condition,
+//                            'limit' => $limit,
+//                            'offset' => $offset,
+//                            'order' => 'title ASC'
+//                        ));
+//
+//                $segurosEmp = Seguros::model()->findAll($criteria2);
+//
+//                $ss .= '<p class="column-emp">';
+//                foreach ($segurosEmp as $se) {
+//                    if ($se['categoria'] == 'empresarial'):
+//                        $ss .= '<a href="' . Yii::app()->createUrl('/seguros/empresariales', array('id' => $se['id'])) . '">' . $se['title'] . '</a>';
+//                    endif;
+//                }
+//                $ss .= '</p>';
+//                $ss .= '</ul>';
+//
+//                break;
+//            case 3:
+//                $servicios = Servicios::model()->findAll();
+//                $ss .= '<ul>
+//                <li><a href = "http://secure.ecuasuiza.ec/ecuasuiza/SoloPortal_Logon.asp" target = "_blank">Transporte Online</a></li>
+//                <li><a href = "' . Yii::app()->createUrl('/site/suizamovil') . '">Suiza Móvil Plus</a></li>
+//                <li><a href = "' . Yii::app()->createUrl('/servicios/index', array('id' => 6)) . '">Reclamos</a>';
+//
+//                foreach ($servicios as $s) {
+//                    if ($s['categoria'] == 'reclamos'):
+//                        $ss .= '<li><a href="' . Yii::app()->createUrl('/servicios/index', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
+//                    endif;
+//                }
+//                $ss .= '</li></ul>';
+//                break;
+//            case 4:
+//                $ss = '<ul>
+//                            <li><a href="' . Yii::app()->createUrl('/noticias/') . '">Noticias</a></li>
+//                            <li><a href="' . Yii::app()->createUrl('/informacion/index', array('cat' => 'programaEducacion')) . '">Programa de Educación Financiera</a></li>
+//                            <li>
+//                                <a href="' . Yii::app()->createUrl('/informacion/index', array('cat' => 'gobiernoCorporativo')) . '">Gobierno Corporativo</a>
+//
+//                            </li>
+//                            <li><a href="#" class="no-link">Ley de Transparencia</a>
+//                                <ul>
+//                                    <li><a href="' . Yii::app()->createUrl('/informacion/index', array('subcat' => 'informacionFinanciera')) . '">Información Financiera</a></li>
+//                                    <li><a href="' . Yii::app()->createUrl('/informacion/index', array('subcat' => 'indicadoresServicioCliente')) . '">Indicadores de Servicio al Cliente</a></li>';
+//                if (!Yii::app()->user->isEditorUser()):
+//                    $ss .= '<a href="#inline1" class="fancybox">Información de accionistas</a>';
+//                else:
+//                    $ss .= '<li><a href="' . Yii::app()->createUrl('/informacion/index', array('subcat' => 'informacionAccionistas')) . '">Información de accionistas </a></li>';
+//                endif;
+//
+//                $ss .= '</ul>
+//                            </li>
+//                            <li><a href="' . Yii::app()->createUrl('/informacion/index', array('cat' => 'lavadoActivos')) . '">Lavado de Activos</a>
+//                            </li>
+//                            <li><a href="' . Yii::app()->createUrl('/informacion/index', array('cat' => 'glosario')) . '">Glosario de Términos</a></li>
+//                            <li><a href="' . Yii::app()->createUrl('/informacion/index', array('cat' => 'preguntasFrecuentes')) . '">Preguntas Frecuentes</a></li>
+//                        </ul>';
+//
+//                break;
+//
+//            default:
+//                break;
+//        }
+//
+//        return $ss;
+//    }
 }

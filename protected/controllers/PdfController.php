@@ -70,15 +70,17 @@ class PdfController extends Controller {
         if (isset($_POST['Pdf'])) {
             $model->attributes = $_POST['Pdf'];
             if ($model->validate()) {
-                $model->keyword = $_POST['Pdf']['keyword'];
                 $fpdf = CUploadedFile::getInstance($model, 'pdf');
+                die('fpdf: '.$fpdf);
                 if ($fpdf == "" || $fpdf->getHasError()) {
                     $model->addError('pdf', 'Error en archivo pdf');
                 } else {
+                    //die('titulo: '.$_POST['Pdf']['titulo_cat']);
                     //die('subcategoria: '.$_POST['Pdf']['subcategoria']);
-                    if(isset($_POST['Pdf']['subcategoria'])){
-                        $model->subcategoria = $_POST['Pdf']['subcategoria'];
-                    }
+                    $model->titulo_cat = $_POST['titulo-desplegable'];
+                    //die('titulo del pdf: '.$_POST['titulo-desplegable']);
+                    $model->id_articulo = $_POST['Pdf']['subcategoria'];
+                    
                     $name_real = $fpdf->getName();
                     $actual = $this->getNumActual(4);
                     $folder = "pdf{$actual}";
@@ -100,8 +102,6 @@ class PdfController extends Controller {
                     $res->save();
                     if ($model->save()){
                         $this->redirect(array('pdf/admin'));
-//                        Yii::app()->user->setFlash('create', 'Archivo subido exitosamente.');
-//                        $this->refresh();
                     }
                 }
             }

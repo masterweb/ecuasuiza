@@ -21,53 +21,81 @@ class AdminSegurosController extends Controller {
 
         //$this->performAjaxValidation($model);
         if (isset($_POST['Seguros'])) {
-
+            //die('enter create');
             $model->attributes = $_POST['Seguros'];
 
-            $archivoAdjunto = CUploadedFile::getInstance($model, 'link_attachment');
             $model->fecha = date("Y-m-d G:i:s");
             $model->img_banner = $_POST['Seguros']['img_banner'];
-            $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
             $model->categoria = $_POST['Seguros']['categoria'];
 
-            if ($model->img_banner == 'Si') {
-                $archivoBanner = CUploadedFile::getInstance($model, 'link_img');
-                $fileName = "{$archivoBanner}";  // file name
-                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
-
-                if ($archivoBanner != '' && $archivoAdjunto != '') {
-                    if (!$archivoBanner->getHasError() && !$archivoAdjunto->getHasError()) {
-                        $model->link_img = $fileName;
-                        $model->link_attachment = $fileName2;
-                        if ($model->save()) {
-                            $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
-                            $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/" . $fileName2);
-                            $this->redirect(array('cms/list'));
-                        } else {
-                            echo 'registro no grabado';
-                            //print_r($model->getErrors());
-                        }
-                    }
-                } else {
-                    $model->save();
-                    $this->redirect(array('cms/list'));
-                }
-            } else {
-                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
-                if ($archivoAdjunto != '') {
-                    if (!$archivoAdjunto->getHasError()) {
-                        $model->link_attachment = $fileName2;
-
-                        if ($model->save()) {
-                            $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros" . $fileName2);
-                            //$archivoAdjunto->saveAs(Yii::app()->basePath . '/docs/' . $fileName2);
-                            $this->redirect(array('cms/list'));
-                        } else {
-                            echo 'registro no grabado';
-                        }
-                    }
-                }
+            $archivoBanner = CUploadedFile::getInstance($model, 'link_img');
+            if ($archivoBanner != '' && !$archivoBanner->getHasError()) {
+                $fileName = "{$archivoBanner}";
+                $model->link_img = $fileName;
+                $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
             }
+            
+            if ($model->save()) {
+                $this->redirect(array('seguros/admin'));
+            }
+
+
+//            if ($model->img_banner == 'Si') {
+//                $archivoBanner = CUploadedFile::getInstance($model, 'link_img');
+//                //die('archivo: '.$archivoBanner);
+//                $fileName = "{$archivoBanner}";  // file name
+//                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
+//
+//                if ($archivoBanner != '' && $archivoAdjunto != '') {
+//                    if (!$archivoBanner->getHasError() && !$archivoAdjunto->getHasError()) {
+//                        $model->link_img = $fileName;
+//                        $model->link_attachment = $fileName2;
+//                        if ($model->save()) {
+//                            $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
+//                            $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/" . $fileName2);
+//                            $this->redirect(array('seguros/admin'));
+//                        } else {
+//                            echo 'registro no grabado';
+//                            //print_r($model->getErrors());
+//                        }
+//                    }
+//                } else {
+//                    $model->save();
+//                    $this->redirect(array('cms/list'));
+//                }
+//                if ($archivoBanner != '') {
+//                    if (!$archivoBanner->getHasError()) {
+//                        $model->link_img = $fileName;
+//                        if ($model->save()) {
+//                            $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
+//                            $this->redirect(array('seguros/admin'));
+//                        } else {
+//                            echo 'registro no grabado';
+//                            //print_r($model->getErrors());
+//                        }
+//                    }
+//                }
+//            } else {
+//                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
+//                if ($archivoAdjunto != '') {
+//                    if (!$archivoAdjunto->getHasError()) {
+//                        $model->link_attachment = $fileName2;
+//
+//                        if ($model->save()) {
+//                            $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros" . $fileName2);
+//                            //$archivoAdjunto->saveAs(Yii::app()->basePath . '/docs/' . $fileName2);
+//                            $this->redirect(array('seguros/admin'));
+//                        } else {
+//                            echo 'registro no grabado';
+//                        }
+//                    }
+//                } else {
+//                    //die('enter no attachment');
+//                    if ($model->save()) {
+//                        $this->redirect(array('seguros/admin'));
+//                    }
+//                }
+//            }
         }
 
         $this->render('index', array(
@@ -85,69 +113,77 @@ class AdminSegurosController extends Controller {
             $model->attributes = $_POST['Seguros'];
             $model->fecha = date("Y-m-d G:i:s");
             $model->categoria = $_POST['Seguros']['categoria'];
-
-            $archivoAdjunto = CUploadedFile::getInstance($model, 'link_attachment');
             $archivoBanner = CUploadedFile::getInstance($model, 'link_img');
             //die('archivoadjunto: '.$archivoAdjunto.' <br>archivobanner: '.$archivoBanner);
-
-            if (($archivoAdjunto != '') && ($archivoBanner != '')){
-                //die('archivoadjunto archivobanner not empty');
+            if (($archivoBanner != '') && !$archivoBanner->getHasError()){
                 $model->img_banner = $_POST['Seguros']['link_img'];
-                $fileName = "{$archivoBanner}";  // file name
-                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
-                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
+                $fileName = "{$archivoBanner}"; 
                 $model->link_img = $fileName;
-                $model->link_attachment = $fileName2;
-
-                if (!$archivoBanner->getHasError() && !$archivoAdjunto->getHasError()) :
-                    $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
-                    $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/" . $fileName2);
-                endif;
-
-                // actualizar datos
+                $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
+                $model->save();
+                $this->redirect(array('cms/list'));
+            }else{
                 $model->save();
                 $this->redirect(array('cms/list'));
             }
-            if (($archivoAdjunto == '') && ($archivoBanner != '')):
-                //$model->img_banner = $_POST['Seguros']['link_img'];
-                $fileName = "{$archivoBanner}";  // file name
-                $model->link_img = $fileName;
-                $model->link_attachment = $_POST['Seguros']['link_attachment_ready'];
-                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment_ready'];
 
-                if (!$archivoBanner->getHasError()):
-                    $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
-                endif;
-                //
-                // actualizar datos
-                $model->save();
-                $this->redirect(array('cms/list'));
-            endif;
-            if (($archivoAdjunto != '') && ($archivoBanner == '')):
-                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
-                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
-                $model->link_attachment = $fileName2;
-                $model->link_img = $_POST['Seguros']['link_img_ready'];
-                //
-                if (!$archivoAdjunto->getHasError()):
-                    $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/" . $fileName2);
-                endif;
-                // actualizar datos
-                $model->save();
-                $this->redirect(array('cms/list'));
-            endif;
-
-            if (($archivoAdjunto == '') && ($archivoBanner == '')){
-                //die('archivoadjunto empty');
-                // solo actualiza campos de texto y desplegables
-                $model->link_img = $_POST['Seguros']['link_img_ready'];
-                $model->link_attachment = $_POST['Seguros']['link_attachment_ready'];
-                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment_ready'];
-                //die('linkimg: '.$model->link_img.'<br>link attachment: '.$model->link_attachment);
-                $model->save();
-                $this->redirect(array('cms/list'));
-
-            }
+//            if (($archivoAdjunto != '') && ($archivoBanner != '')) {
+//                //die('archivoadjunto archivobanner not empty');
+//                $model->img_banner = $_POST['Seguros']['link_img'];
+//                $fileName = "{$archivoBanner}";  // file name
+//                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
+//                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
+//                $model->link_img = $fileName;
+//                $model->link_attachment = $fileName2;
+//
+//                if (!$archivoBanner->getHasError() && !$archivoAdjunto->getHasError()) :
+//                    $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
+//                    $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/" . $fileName2);
+//                endif;
+//
+//                // actualizar datos
+//                $model->save();
+//                $this->redirect(array('cms/list'));
+//            }
+//            if (($archivoAdjunto == '') && ($archivoBanner != '')):
+//                //$model->img_banner = $_POST['Seguros']['link_img'];
+//                $fileName = "{$archivoBanner}";  // file name
+//                $model->link_img = $fileName;
+//                $model->link_attachment = $_POST['Seguros']['link_attachment_ready'];
+//                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment_ready'];
+//
+//                if (!$archivoBanner->getHasError()):
+//                    $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/seguros/" . $fileName);
+//                endif;
+//                //
+//                // actualizar datos
+//                $model->save();
+//                $this->redirect(array('cms/list'));
+//            endif;
+//            if (($archivoAdjunto != '') && ($archivoBanner == '')):
+//                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment'];
+//                $fileName2 = "{$archivoAdjunto}"; // archivo adjunto
+//                $model->link_attachment = $fileName2;
+//                $model->link_img = $_POST['Seguros']['link_img_ready'];
+//                //
+//                if (!$archivoAdjunto->getHasError()):
+//                    $archivoAdjunto->saveAs(Yii::getPathOfAlias("webroot") . "/uploads/" . $fileName2);
+//                endif;
+//                // actualizar datos
+//                $model->save();
+//                $this->redirect(array('cms/list'));
+//            endif;
+//
+//            if (($archivoAdjunto == '') && ($archivoBanner == '')) {
+//                //die('archivoadjunto empty');
+//                // solo actualiza campos de texto y desplegables
+//                $model->link_img = $_POST['Seguros']['link_img_ready'];
+//                $model->link_attachment = $_POST['Seguros']['link_attachment_ready'];
+//                $model->tipo_attachment = $_POST['Seguros']['tipo_attachment_ready'];
+//                //die('linkimg: '.$model->link_img.'<br>link attachment: '.$model->link_attachment);
+//                $model->save();
+//                $this->redirect(array('cms/list'));
+//            }
         }
 
         $this->render('update', array(

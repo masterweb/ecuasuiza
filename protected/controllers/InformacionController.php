@@ -5,9 +5,17 @@ class InformacionController extends Controller {
     public function actionIndex() {
         $this->render('index');
     }
+    
+    public function actionIndex2() {
+        $this->render('index_1');
+    }
 
     public function actionNoticias() {
         $this->render('noticias');
+    }
+    
+    public function actionInfo() {
+        $this->render('info');
     }
 
     // Uncomment the following methods and override them if needed

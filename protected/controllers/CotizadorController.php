@@ -102,7 +102,7 @@ class CotizadorController extends Controller {
 
                             $asunto = 'Formulario enviado desde Ecuasuiza: Cotizador Auto';
                             if ($valor != ''):
-                                sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'gansaldo72@hotmail.com', html_entity_decode($asunto), $codigohtml, 'utf-8');
+                                sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'stamenka.papic@ecuasuiza.ec', html_entity_decode($asunto), $codigohtml, 'utf-8');
                                 Yii::app()->user->setFlash('cotizadorinfo', '<h4>Valor aproximado</h4>
                                 <p>USD.:<b>' . number_format($valor) . '</b></p>
                                 <p class="rec-title">Recuerda que este es un valor referencial</p>
@@ -110,7 +110,7 @@ class CotizadorController extends Controller {
                                 para brindarte una atención personalizada.', array('id' => 'confirmate'));
                                 $this->redirect(array('cotizadorinfo'));
                             else:
-                                sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'gansaldo72@hotmail.com', html_entity_decode($asunto), $codigohtml, 'utf-8');
+                                sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'stamenka.papic@ecuasuiza.ec', html_entity_decode($asunto), $codigohtml, 'utf-8');
                                 Yii::app()->user->setFlash('cotizadorinfo', '
                             <p>No existe un valor de éste modelo para el año solicitado</p>
                             <p>Seleccione un nuevo año u otro modelo.</p>', array('id' => 'confirmate'));
@@ -138,7 +138,7 @@ class CotizadorController extends Controller {
                             $headers .= 'Content-type: text/html' . "\r\n";
 
                             $asunto = 'Formulario enviado desde Ecuasuiza';
-                            if (sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'gansaldo72@hotmail.com', html_entity_decode($asunto), $codigohtml, 'utf-8')) {
+                            if (sendEmailFunction('jorge.rodriguez@ariadna.com.ec', "Ecuasuiza", 'stamenka.papic@ecuasuiza.ec', html_entity_decode($asunto), $codigohtml, 'utf-8')) {
                                 //die('before email');
                                 Yii::app()->user->setFlash('cotizadorinfo', '<h4>Información Enviada</h4>En un período de 24 horas nuestros asesores se comunicarán contigo
                             para brindarte una atención personalizada.');

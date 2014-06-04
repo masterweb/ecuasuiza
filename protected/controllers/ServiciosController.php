@@ -17,14 +17,14 @@ class ServiciosController extends Controller {
             if ($model->validate()) {
                 $model->fecha = date("Y-m-d G:i:s");
                 $adjunto = $_POST['adjuntoRadio'];
-                $model->has_foto = $_POST['Servicios']['img_banner'];
-                // si el servicio tiene foto
-                if ($model->has_foto == 1) {
-                    $archivoBanner = CUploadedFile::getInstance($model, 'banner');
-                    $model->banner = $archivoBanner;
-                    $fileNameBanner = "{$archivoBanner}";
-                    $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/servicios/" . $fileNameBanner);
-                }
+//                $model->has_foto = $_POST['Servicios']['img_banner'];
+//                // si el servicio tiene foto
+//                if ($model->has_foto == 1) {
+//                    $archivoBanner = CUploadedFile::getInstance($model, 'banner');
+//                    $model->banner = $archivoBanner;
+//                    $fileNameBanner = "{$archivoBanner}";
+//                    $archivoBanner->saveAs(Yii::getPathOfAlias("webroot") . "/img/servicios/" . $fileNameBanner);
+//                }
                 $model->has_adjuntos = $_POST['adjuntoRadio'];
                 if ($adjunto == 'si') {
                     $num_adjuntos = $_POST['Servicios']['num_adjuntos'];
@@ -82,6 +82,9 @@ class ServiciosController extends Controller {
                         default:
                             break;
                     }
+                } else {
+                    $model->save();
+                    $this->redirect(array('servicios/admin'));
                 }
             }
         }
@@ -96,6 +99,11 @@ class ServiciosController extends Controller {
             $model->attributes = $_POST['Servicios'];
             $model->fecha = date("Y-m-d G:i:s");
             $model->categoria = $_POST['Servicios']['categoria'];
+            if ($model->save()) {
+                $this->render('admin', array(
+                    'model' => $model,
+                ));
+            }
         }
 
         $this->render('update', array(
