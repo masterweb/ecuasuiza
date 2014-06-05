@@ -26,9 +26,9 @@ class UserIdentity extends CUserIdentity {
             yii::app()->user->setState("isAdminUser", false);
         }
         if ($comprobar->user_level == 3) {
-            yii::app()->user->setState("isReadUser", true);
+            yii::app()->user->setState("isEditorUser", true);
         } else {
-            yii::app()->user->setState("isReadUser", false);
+            yii::app()->user->setState("isEditorUser", false);
         }
         if (!isset($comprobar))
             $this->errorCode = self::ERROR_USERNAME_INVALID;
