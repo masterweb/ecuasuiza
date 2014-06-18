@@ -59,7 +59,7 @@ class ArticulosController extends Controller {
      */
     public function actionCreate() {
         $model = new Articulos;
-        $_SESSION['KCFINDER']['disabled'] = true; // enables the file browser in the admin
+        $_SESSION['KCFINDER']['disabled'] = false; // enables the file browser in the admin
         $_SESSION['KCFINDER']['uploadURL'] = Yii::app()->baseUrl . "/uploads/"; // URL for the uploads folder
         $_SESSION['KCFINDER']['uploadDir'] = Yii::app()->basePath . "/../uploads/"; // path to the uploads folder
         // Uncomment the following line if AJAX validation is needed
@@ -130,7 +130,7 @@ class ArticulosController extends Controller {
      * @param integer $id the ID of the model to be updated
      */
     public function actionUpdate($id) {
-        $_SESSION['KCFINDER']['disabled'] = true; // enables the file browser in the admin
+        $_SESSION['KCFINDER']['disabled'] = false; // enables the file browser in the admin
         $_SESSION['KCFINDER']['uploadURL'] = Yii::app()->baseUrl . "/uploads/"; // URL for the uploads folder
         $_SESSION['KCFINDER']['uploadDir'] = Yii::app()->basePath . "/../uploads/"; // path to the uploads folder
         $model = $this->loadModel($id);
@@ -179,7 +179,7 @@ class ArticulosController extends Controller {
                 $data .= '<option value="">--Seleccione--</option><option value="' . $value['titulo_cat'] . '">' . $value['titulo_cat'] . '</option>';
             }
             $count = 1;
-        }else{
+        } else {
             $data .= '<option value="">--Seleccione--</option>
                 <option value="nuevo">Nuevo Desplegable</option>
                 <option value="ninguno">Ninguno</option>';
@@ -263,9 +263,12 @@ class ArticulosController extends Controller {
      */
     public function actionDelete($id) {
         $sub = $this->getMenuTipo($id);
-        if ($sub == 1) {
-            $this->setMenuNormal($id);
+        //die('id_menu_principal: '.$sub);
+        if ($sub != '') {
+            //die('enter sub');
+            $this->setMenuNormal($sub);
         }
+
         $this->loadModel($id)->delete();
 
 
@@ -393,20 +396,21 @@ class ArticulosController extends Controller {
 
     private function setMenuNormal($id) {
         $con = Yii::app()->db;
+
         $sql = "UPDATE tbl_articulos SET submenu = 0 WHERE id_articulos = {$id}";
-        //die('sql: '.$sql);
         $request = $con->createCommand($sql)->query();
+        //die('after command ');
     }
 
     private function getMenuTipo($id) {
         $con = Yii::app()->db;
         //die('sql: '.$sql);
         $user = Yii::app()->db->createCommand()
-                ->select('submenu')
+                ->select('id_menu_principal')
                 ->from('tbl_articulos')
                 ->where('id_articulos=:id', array(':id' => $id))
                 ->queryRow();
-        return $user['submenu'];
+        return $user['id_menu_principal'];
     }
 
 }

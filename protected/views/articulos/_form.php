@@ -2,7 +2,7 @@
 if (!Yii::app()->user->isAdminUser()) {
     $this->redirect($this->createUrl('admin/login'));
 }
-if(isset($_GET['categoria']) ){
+if (isset($_GET['categoria'])) {
     $id = $_GET['categoria'];
     $criteria = new CDbCriteria(array("condition" => "categoria='$id'", "order" => "orden DESC"));
     $art = Articulos::model()->findAll($criteria);
@@ -55,9 +55,11 @@ if(isset($_GET['categoria']) ){
                     </span>
                     <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remover</a>
                 </div>
-                <input type="hidden" id="categoria" name="categoria" value="<?php if (isset($_GET['categoria'])) {
+                <input type="hidden" id="categoria" name="categoria" value="<?php
+                        if (isset($_GET['categoria'])) {
                             echo $_GET['categoria'];
-                        } ?>"/>
+                        }
+                        ?>"/>
                 <input type="hidden" id="tipo" name="tipo" value="' . $tipo . '"/>
             </div>
         </div>
@@ -70,7 +72,7 @@ if(isset($_GET['categoria']) ){
             '0' => 'No'
                 ), array('id' => 'galeria-select'));
         ?>
-<?php echo $form->error($model, 'galeria'); ?>
+        <?php echo $form->error($model, 'galeria'); ?>
     </div>
     <div class="row" id="fields-galeria" style="display: none;">
         <?php echo $form->labelEx($model, 'link_string'); ?>
@@ -108,7 +110,7 @@ if(isset($_GET['categoria']) ){
             '0' => 'Secundario'
         ));
         ?>
-        <?php echo $form->error($model, 'principal'); ?>
+<?php echo $form->error($model, 'principal'); ?>
     </div>
     <div class="row" id="selec-menu2" style="display: none;">
         <label>Submenú</label>
@@ -131,17 +133,36 @@ if(isset($_GET['categoria']) ){
     </div>
     <div class="row">
         <?php //echo $form->labelEx($model, 'orden');   ?>
-<?php //echo $form->textField($model, 'orden', array('size' => 60, 'maxlength' => 150));    ?>
-<?php //echo $form->error($model, 'orden');   ?>
+<?php //echo $form->textField($model, 'orden', array('size' => 60, 'maxlength' => 150));     ?>
+<?php //echo $form->error($model, 'orden');    ?>
     </div>
 
+<!--    <div class="row">
+    <?php //echo $form->labelEx($model, 'contenido'); ?>
+    <?php //echo $form->textArea($model, 'contenido', array('id' => 'editor1', 'height' => '400px', 'width' => '100%')); ?>
+    <?php //echo $form->error($model, 'contenido'); ?>
+    </div>-->
     <div class="row">
-<?php echo $form->labelEx($model, 'contenido'); ?>
-        <?php //echo $form->textArea($model, 'contenido', array('rows' => 6, 'cols' => 50, 'class' => 'textarea2', 'style' => 'height:400px;'));   ?>
-
-
-<?php echo $form->textArea($model, 'contenido', array('id' => 'editor1', 'height' => '400px', 'width' => '100%')); ?>
-        <?php echo $form->error($model, 'contenido'); ?>
+        <?php
+        $this->widget('application.extensions.TheCKEditor.theCKEditorWidget', array(
+            'model' => $model, # Data-Model (form model)
+            'attribute' => 'contenido', # Attribute in the Data-Model
+            'height' => '400px',
+            'width' => '100%',
+            'toolbarSet' => 'Full', # EXISTING(!) Toolbar (see: ckeditor.js)
+            'ckeditor' => Yii::app()->basePath . '/../ckeditor/ckeditor.php',
+            # Path to ckeditor.php
+            'ckBasePath' => Yii::app()->baseUrl . '/ckeditor/',
+            # Relative Path to the Editor (from Web-Root)
+            'css' => Yii::app()->baseUrl . '/css/index.css',
+            # Additional Parameters
+            'config' => array('toolbar' => "Full",
+                "filebrowserImageUploadUrl" => Yii::app()->baseUrl . '/kcfinder/upload.php?type=images',
+                "filebrowserBrowseUrl" => Yii::app()->baseUrl . '/kcfinder/browse.php?type=files',
+                "filebrowserImageBrowseUrl" => Yii::app()->baseUrl . '/kcfinder/browse.php?type=images',
+                "filebrowserFlashBrowseUrl" => Yii::app()->baseUrl . '/kcfinder/browse.php?type=flash',)
+        ));
+        ?>
     </div>
     <div class="row buttons">
     <?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar'); ?>
@@ -149,10 +170,13 @@ if(isset($_GET['categoria']) ){
 
 <?php $this->endWidget(); ?>
     <script type="text/javascript">
-        CKEDITOR.replace( 'editor1');
+        //CKEDITOR.replace( 'editor1');
         $( document ).ready(function() {
             
-            var id = '<?php if(isset($_GET['categoria'])){ $id = $_GET['categoria'];echo $id;} ?>';
+            var id = '<?php if (isset($_GET['categoria'])) {
+    $id = $_GET['categoria'];
+    echo $id;
+} ?>';
             if(id == 'news'){
                 $('#menu-articulo').hide();
             }
