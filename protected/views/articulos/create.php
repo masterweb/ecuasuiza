@@ -1,18 +1,26 @@
 <?php
+
+if (!Yii::app()->user->isAdminUser()) {
+    $this->redirect($this->createUrl('admin/login'));
+}
+?>
+<?php
 /* @var $this ArticulosController */
 /* @var $model Articulos */
+if(isset($_GET['categoria']) ){
+    $id = $_GET['categoria'];
+    $criteria = new CDbCriteria(array("condition" => "categoria='$id'", "order" => "orden DESC"));
+    $art = Articulos::model()->findAll($criteria);
+    //echo 'categoria: '.$id;
+}
 
-$this->breadcrumbs=array(
-	'Articuloses'=>array('index'),
-	'Create',
-);
 
 $this->menu=array(
-	array('label'=>'List Articulos', 'url'=>array('index')),
-	array('label'=>'Manage Articulos', 'url'=>array('admin')),
+	//array('label'=>'Listar Articulos', 'url'=>array('index')),
+	//array('label'=>'Administrar Articulos', 'url'=>array('admin','categoria'=>$id)),
 );
 ?>
 
-<h1>Create Articulos</h1>
+<h4>Crear Artículos</h4>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

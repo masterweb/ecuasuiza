@@ -1,15 +1,28 @@
 <?php
+if (!Yii::app()->user->isAdminUser()) {
+    $this->redirect($this->createUrl('admin/login'));
+}
+?>
+<?php
+$this->breadcrumbs = array(
+    'Administrador Artículos',
+);
 /* @var $this ArticulosController */
 /* @var $model Articulos */
+if (isset($_GET['categoria'])) {
+    $id = $_GET['categoria'];
+    $criteria = new CDbCriteria(array("condition" => "categoria='$id'", "order" => "orden DESC"));
+    $art = Articulos::model()->findAll($criteria);
+    //echo 'categoria: '.$id;
+}
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+}
 
-$this->breadcrumbs = array(
-    'Articuloses' => array('index'),
-    'Manage',
-);
 
 $this->menu = array(
-    array('label' => 'List Articulos', 'url' => array('index')),
-    array('label' => 'Create Articulos', 'url' => array('create')),
+    //array('label' => 'Listar Articulos', 'url' => array('index')),
+    array('label' => 'Crear Artículos', 'url' => array('create', 'categoria' => $id)),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -31,10 +44,10 @@ $('.search-form form').submit(function(){
     }
 </style>
 
-<a href="<?php echo Yii::app()->createUrl('articulos/create'); ?>"><button class="btn btn-primary" type="button">Crear Nuevo Artículo</button></a>
-<h4>Manage Articulos</h4>
+<!--<a href="<?php echo Yii::app()->createUrl('articulos/create'); ?>"><button class="btn btn-primary" type="button">Crear Nuevo Artículo</button></a>-->
+<h4>Administrador Artículos</h4>
 
-<?php echo CHtml::link('Advanced Search', '#', array('class' => 'search-button')); ?>
+<?php echo CHtml::link('Busqueda Avanzada', '#', array('class' => 'search-button')); ?>
 <div class="search-form" style="display:none">
     <?php
     $this->renderPartial('_search', array(
@@ -55,22 +68,15 @@ $this->widget('zii.widgets.grid.CGridView', array(
         'title',
         'desc_min',
         //'contenido',
+        'categoria',
         /*
-          'categoria',
           'fecha',
          */
-        'activo',
+        'submenu',
         array(
             'class' => 'CButtonColumn',
-            'template' => '{view} {update} {delete} {adjuntar}',
-            'buttons' => array(
-                'adjuntar' => array(
-                    'url' => 'Util::getURLAdjuntarArticulo($data)',
-                    'options' => array(
-                        'class' => 'icon-plus-sign',
-                    ),
-                ),
-            )
+            'template' => '{update} {delete}',
+
         ),
     ),
 ));
