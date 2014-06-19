@@ -174,10 +174,21 @@ if (isset($_GET['categoria'])) {
         $( document ).ready(function() {
             
             var id = '<?php if (isset($_GET['categoria'])) {
-                $id = $_GET['categoria'];
-                echo $id;
-            } ?>';
-            
+    $id = $_GET['categoria'];
+    echo $id;
+} ?>';
+            if(id == 'news'){
+                $('#menu-articulo').hide();
+            }
+            if(id == 'informacion'){
+                $('#thumb-gallery').hide();
+                $('#gallery-menu').hide();
+            }
+            if(id == 'nosotros'){
+                $('#thumb-gallery').hide();
+                $('#gallery-menu').hide();
+                $('#menu-articulo').hide();
+            }
         });
         
     </script>

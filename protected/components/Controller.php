@@ -26,30 +26,23 @@ class Controller extends CController {
 
     public function getSubSecciones($id) {
         $subseccion = Subcategorias::model()->findAllByAttributes(array("id_categoria" => $id), array('order' => 'posicion'));
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $mobile_agents = '!(tablet|pad|mobile|phone|symbian|android|ipod|ios|blackberry|webos)!i';
-            if (preg_match($mobile_agents, $_SERVER['HTTP_USER_AGENT'])) {
-                $mobile = true;
-            } else {
-                $mobile = false;
-            }
-        }
+
         $ss = '';
         switch ($id) {
             case 1:
                 $criteria = new CDbCriteria(array(
-                            "condition" => "categoria='individuales'",
-                            'order' => 'title ASC'
-                        ));
+                    "condition" => "categoria='individuales'",
+                    'order' => 'title ASC'
+                    ));
                 $seguros = Seguros::model()->findAll($criteria);
-                $ss = "<ul class='seguros-ind submenuec'>";
+                $ss = "<ul class='seguros-ind'>";
                 foreach ($seguros as $s) {
-                    $ss.= '<li><a href="' . Yii::app()->createUrl('/seguros/individuales', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
+                        $ss.= '<li><a href="' . Yii::app()->createUrl('/seguros/individuales', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
                 }
                 $ss .= '</ul>';
                 break;
             case 2:
-                $ss = "<ul class='sub-empresariales submenuec'>";
+                $ss = "<ul class='sub-empresariales'>";
                 $condition = 'categoria ="empresarial"';
 
                 $criteria = new CDbCriteria(array(
@@ -106,10 +99,10 @@ class Controller extends CController {
                 break;
             case 3:
                 $servicios = Servicios::model()->findAll(array('order' => 'orden'));
-                $ss .= '<ul class="submenuec">';
+                $ss .= '<ul>';
                 foreach ($servicios as $s) {
                     if ($s['direct_link'] != null):
-                        $ss .= '<li><a href="' . $s['direct_link'] . '" target = "_blank">' . $s['title'] . '</a></li>';
+                        $ss .= '<li><a href="' . $s['direct_link']. '" target = "_blank">' . $s['title'] . '</a></li>';
                     else:
                         $ss .= '<li><a href="' . Yii::app()->createUrl('/servicios/index', array('id' => $s['id'])) . '">' . $s['title'] . '</a></li>';
                     endif;
@@ -141,32 +134,28 @@ class Controller extends CController {
             case 4:
                 $criteria = new CDbCriteria(array("condition" => "categoria='informacion' and principal=1", "order" => "orden"));
                 $art = Articulos::model()->findAll($criteria);
-                $ss = '<ul class="submenuec">';
+                $ss = '<ul>';
                 $ss .= '<li><a href="' . Yii::app()->createUrl('/noticias/') . '">Noticias</a></li>';
                 foreach ($art as $value) {
                     if ($value['submenu'] == 1) {
-                        if($mobile){
-                            $ss .= '<li><a href="#" class="no-link has-level" style="color:#4A9D43 !important;">' . $value['title'] . '</a>';
-                        }else{
-                            $ss .= '<li><a href="#" class="no-link has-level">' . $value['title'] . '</a>';
-                        }
+                        $ss .= '<li><a href="#" class="no-link">' . $value['title'] . '</a>';
                         $criteria = new CDbCriteria(array("condition" => "id_menu_principal={$value['id_articulos']}", "order" => "orden"));
                         $submenu = Articulos::model()->findAll($criteria);
-                        $ss .= '<ul class="sub-level">';
+                        $ss .= '<ul>';
                         foreach ($submenu as $sub) {
                             if ($sub['access'] == 0) {
                                 if (!Yii::app()->user->isEditorUser()):
-                                    $ss .= '<a href="#inline1" class="fancybox" id="fancybox-manual">' . $sub['title'] . '</a>';
+                                    $ss .= '<a href="#inline1" class="fancybox" id="fancybox-manual">'.$sub['title'].'</a>';
                                 else:
                                     $ss .= '<li><a href="' . Yii::app()->createUrl('/informacion/index', array('id' => $sub['id_articulos'])) . '">' . $sub['title'] . '</a></li>';
                                 endif;
-                            }else {
+                            }else{
                                 $ss .= '<li><a href="' . Yii::app()->createUrl('/informacion/index', array('id' => $sub['id_articulos'])) . '">' . $sub['title'] . '</a></li>';
                             }
                         }
                         $ss .= '</ul>
                                 </li>';
-                    } else {
+                    }else {
                         $ss .= '<li><a href="' . Yii::app()->createUrl('/informacion/index', array('id' => $value['id_articulos'])) . '">' . $value['title'] . '</a></li>';
                     }
                 }
